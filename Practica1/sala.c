@@ -26,6 +26,9 @@ int reserva_asiento(int id_persona){
 
 
 int libera_asiento(int id_asiento){
+	if (id_asiento < 0){
+		return -1;
+	}
 	*(asientos + id_asiento) = -1;
     asientos_ocupados_variable--;
 }
