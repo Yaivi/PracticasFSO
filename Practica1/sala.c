@@ -7,21 +7,40 @@ int asientos_libres_variable;
 int asientos_ocupados_variable;
 
 
+
 int reserva_asiento(int id_persona){
+	if (asientos_libres_variable == 0){
+		return -1;
+	}
+	for (int count = 1; count<CAPACIDAD_MAXIMA; count++){
+		if (*(asientos + count) == -1){
+			asientos_ocupados_variable++;
+			return *(asientos + count);
+		}
+	}
 }
+
 
 int libera_asiento(int id_asiento){
   *(asientos + id_asiento) = -1;
   asientos_ocupados_variable--;
 }
 
+
 int estado_asiento(int id_asiento){
-  
+	if (*(asientos + id_asiento) != -1){
+		return *(asientos + id_asiento);
+	}
+	else{
+		return 0;
+	}
 }
+
 
 int asientos_libres(){
   return asientos_libres_variable;
 }
+
 
 int asientos_ocupados(){
   return asientos_ocupados_variable;
@@ -31,6 +50,7 @@ int asientos_ocupados(){
 int capacidad_sala(){
   return CAPACIDAD_MAXIMA;
 }
+
 
 int crea_sala(int capacidad){
   CAPACIDAD_MAXIMA = capacidad;
@@ -44,6 +64,7 @@ int crea_sala(int capacidad){
   }
   return 0;
 }
+
 
 int elimina_sala(){
   if (asientos == NULL){
