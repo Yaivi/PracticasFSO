@@ -8,6 +8,11 @@ int asientos_ocupados_variable;
 
 
 int reserva_asiento(int id_persona){
+	// Si el id_persona es menor que 0 dará error.
+	if (id_persona < 0){
+		return -1;
+	}
+	// Si no hay ningún asiento libre dará error.
 	if (asientos_libres_variable == 0){
 		return -1;
 	}
