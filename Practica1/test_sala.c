@@ -48,7 +48,6 @@ void test_CapacidadNegativa(){
 	INICIO_TEST("Capacidad Negativa");
 	DebeSerCierto(crea_sala(CAPACIDAD_MENOR_CERO)==-1);
 	DebeSerCierto(elimina_sala()==-1);
-	
 	FIN_TEST("Capacidad Negativa");
 }
 
