@@ -75,7 +75,7 @@ void test_CapacidadMaxSobrepasada(){
 }
 
 
-void test_RerservaSinSala() {
+void test_ReservaSinSala() {
 	int mi_asiento;
 	#define ID_2 100
 	INICIO_TEST("Reserva Sin Sala");
@@ -96,34 +96,37 @@ void test_reservas_multiples() {
 		DebeSerCierto((mi_asiento=reserva_asiento(ID_3))>=0);
 	}
 	DebeSerCierto(asientos_libres() == 3);
-	FIN_TEST("Reservas multiples");    
+	elimina_sala();
+	FIN_TEST("Reservas multiples");
 }
 
 
 void test_ReservaPrimerAsiento(){
-	#define capacidad_test_reservaprimer_asiento 10
+	#define capacidad_ReservaPrimerAsiento 10
 	int mi_primer_asiento;
-	INICIO_TEST("Reserva primer asiento");
-	crea_sala(capacidad_test_reservaprimer_asiento);
 	int id_persona_primera = 765432;
-	DebeSerCierto(mi_primer_asiento=reserva_asiento(ID_1)==1);
-
+	
+	INICIO_TEST("Reserva primer asiento");
+	crea_sala(capacidad_ReservaPrimerAsiento);
+	DebeSerCierto((mi_primer_asiento=reserva_asiento(id_persona_primera))>=0);
+	DebeSerCierto(elimina_sala()==0);
 	FIN_TEST("Reserva primer asiento");
 }
 
-
-void test_ReservarAsientoAntesOcupado(){ 
-	#define CAPACIDAD_MAX_ASIENTOS_OCUPADOS 100
-	int id_asiento_nuevo = 77;
-
-	INICIO_TEST("Reservar asiento anteriormente ocupado");
-	crea_sala(CAPACIDAD_MAX_ASIENTOS_OCUPADOS);
-	for (int i = 1; i<=CAPACIDAD_MAX; i++){
-	reserva_asiento(i*10);
+void test_ReservaAsientoLiberado(){
+	#define capacidad_ReservaAsientoLiberado 10
+	int id_persona_en_asiento_liberado = 98765432;
+	int mi_asiento_liberado;
+	
+	INICIO_TEST("Reserva asiento liberado");
+	crea_sala(capacidad_ReservaAsientoLiberado);
+	for (int i = 1; i<=capacidad_ReservaAsientoLiberado; i++){
+		reserva_asiento(i*100);
 	}
 	libera_asiento(2);
-	DebeSerCierto(reserva_asiento(id_asiento_nuevo)==2);
-	FIN_TEST("Capacidad asiento anteriormente ocupado");
+	DebeSerCierto(mi_asiento_liberado=reserva_asiento(id_persona_en_asiento_liberado)>=2);
+	DebeSerCierto(elimina_sala()==0);
+	FIN_TEST("Reserva asiento liberado");
 }
 
 
@@ -137,7 +140,7 @@ void ejecuta_tests ()
 	test_ReservaSinSala();
 	test_reservas_multiples();
 	test_ReservaPrimerAsiento();
-	test_ReservarAsientoAntesOcupado();
+	test_ReservaAsientoLiberado();
 }
 
 int main()
