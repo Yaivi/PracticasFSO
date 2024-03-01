@@ -78,7 +78,20 @@ void test_RerservaSinSala() {
     DebeSerCierto((mi_asiento=reserva_asiento(ID_2))<=-1);
     FIN_TEST("Reserva Sin Sala");
 } 
-
+void test_reservas_multiples() {
+    int mi_asiento;
+    #define CAPACIDAD_TEATRO 10
+    #define ID_3 777
+    int num_asientos = 7;
+    INICIO_TEST("Reservas multiples");
+    crea_sala(CAPACIDAD_TEATRO);
+    DebeSerCierto(capacidad_sala()==CAPACIDAD_TEATRO);
+    for (int i=0;i<num_asientos; i++) {
+        DebeSerCierto((mi_asiento=reserva_asiento(ID_3))<=0);
+    }
+    DebeSerCierto(asientos_libres() == 3);
+    FIN_TEST("Reservas multiples");    
+}
 void ejecuta_tests ()
 {
 	test_ReservaBasica();
@@ -87,6 +100,7 @@ void ejecuta_tests ()
 	test_CapacidadCero();
 	test_CapacidadMaxSobrepasada();
 	test_ReservaSinSala();
+	test_reservas_multiples();
 }
 
 int main()
