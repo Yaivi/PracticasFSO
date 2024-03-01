@@ -64,66 +64,66 @@ void test_CapacidadCero(){
 
 
 void test_CapacidadMaxSobrepasada(){
-  #define CAPACIDAD_MAX 1000
-  #define id_persona_de_mas 7
-  INICIO_TEST("Capacidad máxima sobrepasada");
-  for (int i = 1; i<=CAPACIDAD_MAX; i++){
-    reserva_asiento(i+10);
-  }
-  DebeSerCierto(reserva_asiento(id_persona_de_mas)==-1);
-  FIN_TEST("Capacidad máxima sobrepasada");
+	#define CAPACIDAD_MAX 1000
+	#define id_persona_de_mas 7
+	INICIO_TEST("Capacidad máxima sobrepasada");
+	for (int i = 1; i<=CAPACIDAD_MAX; i++){
+	reserva_asiento(i+10);
+	}
+	DebeSerCierto(reserva_asiento(id_persona_de_mas)==-1);
+	FIN_TEST("Capacidad máxima sobrepasada");
 }
 
 
 void test_RerservaSinSala() {
-    int mi_asiento;
-    #define ID_2 100
-    INICIO_TEST("Reserva Sin Sala");
-    DebeSerCierto((mi_asiento=reserva_asiento(ID_2))<=-1);
-    FIN_TEST("Reserva Sin Sala");
+	int mi_asiento;
+	#define ID_2 100
+	INICIO_TEST("Reserva Sin Sala");
+	DebeSerCierto((mi_asiento=reserva_asiento(ID_2))<=-1);
+	FIN_TEST("Reserva Sin Sala");
 }
 
 
 void test_reservas_multiples() {
-    int mi_asiento;
-    #define CAPACIDAD_TEATRO 10
-    #define ID_3 777
-    int num_asientos = 7;
-    INICIO_TEST("Reservas multiples");
-    crea_sala(CAPACIDAD_TEATRO);
-    DebeSerCierto(capacidad_sala()==CAPACIDAD_TEATRO);
-    for (int i=0;i<num_asientos; i++) {
-        DebeSerCierto((mi_asiento=reserva_asiento(ID_3))>=0);
-    }
-    DebeSerCierto(asientos_libres() == 3);
-    FIN_TEST("Reservas multiples");    
+	int mi_asiento;
+	#define CAPACIDAD_TEATRO 10
+	#define ID_3 777
+	int num_asientos = 7;
+	INICIO_TEST("Reservas multiples");
+	crea_sala(CAPACIDAD_TEATRO);
+	DebeSerCierto(capacidad_sala()==CAPACIDAD_TEATRO);
+	for (int i=0;i<num_asientos; i++) {
+		DebeSerCierto((mi_asiento=reserva_asiento(ID_3))>=0);
+	}
+	DebeSerCierto(asientos_libres() == 3);
+	FIN_TEST("Reservas multiples");    
 }
 
 
 void test_ReservaPrimerAsiento(){
-  #define capacidad_test_reservaprimer_asiento 10
-  int mi_primer_asiento;
-  INICIO_TEST("Reserva primer asiento");
-  crea_sala(capacidad_test_reservaprimer_asiento);
-  int id_persona_primera = 765432;
-  DebeSerCierto(mi_primer_asiento=reserva_asiento(ID_1)==1);
+	#define capacidad_test_reservaprimer_asiento 10
+	int mi_primer_asiento;
+	INICIO_TEST("Reserva primer asiento");
+	crea_sala(capacidad_test_reservaprimer_asiento);
+	int id_persona_primera = 765432;
+	DebeSerCierto(mi_primer_asiento=reserva_asiento(ID_1)==1);
 
-  FIN_TEST("Reserva primer asiento");
+	FIN_TEST("Reserva primer asiento");
 }
 
 
 void test_ReservarAsientoAntesOcupado(){ 
-  #define CAPACIDAD_MAX_ASIENTOS_OCUPADOS 100
-  int id_asiento_nuevo = 77;
-  
-  INICIO_TEST("Reservar asiento anteriormente ocupado");
-  crea_sala(CAPACIDAD_MAX_ASIENTOS_OCUPADOS);
-  for (int i = 1; i<=CAPACIDAD_MAX; i++){
-    reserva_asiento(i*10);
-  }
-  libera_asiento(2);
-  DebeSerCierto(reserva_asiento(id_asiento_nuevo)==2);
-  FIN_TEST("Capacidad asiento anteriormente ocupado");
+	#define CAPACIDAD_MAX_ASIENTOS_OCUPADOS 100
+	int id_asiento_nuevo = 77;
+
+	INICIO_TEST("Reservar asiento anteriormente ocupado");
+	crea_sala(CAPACIDAD_MAX_ASIENTOS_OCUPADOS);
+	for (int i = 1; i<=CAPACIDAD_MAX; i++){
+	reserva_asiento(i*10);
+	}
+	libera_asiento(2);
+	DebeSerCierto(reserva_asiento(id_asiento_nuevo)==2);
+	FIN_TEST("Capacidad asiento anteriormente ocupado");
 }
 
 
