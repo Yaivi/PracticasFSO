@@ -51,11 +51,22 @@ void test_CapacidadNegativa(){
 	FIN_TEST("Capacidad Negativa");
 }
 
+
+void test_CapacidadCero(){
+	#define CAPACIDAD_CERO 0
+
+	INICIO_TEST("Capacidad Cero");
+	DebeSerCierto(crea_sala(CAPACIDAD_CERO)==-1);
+	DebeSerCierto(elimina_sala()==0);
+	FIN_TEST("Capacidad Cero");
+}
+
 void ejecuta_tests ()
 {
 	test_ReservaBasica();
 	// Añadir nuevos tests
 	test_CapacidadNegativa();
+	test_CapacidadCero();
 }
 
 int main()
