@@ -92,6 +92,18 @@ void test_reservas_multiples() {
     DebeSerCierto(asientos_libres() == 3);
     FIN_TEST("Reservas multiples");    
 }
+
+void test_ReservaPrimerAsiento(){
+  #define capacidad_test_reservaprimer_asiento 10
+  int mi_primer_asiento;
+  INICIO_TEST("Reserva primer asiento");
+  crea_sala(capacidad_test_reservaprimer_asiento);
+  int id_persona_primera = 765432;
+  DebeSerCierto(mi_primer_asiento=reserva_asiento(ID_1)==1);
+
+  FIN_TEST("Reserva primer asiento");
+}
+
 void ejecuta_tests ()
 {
 	test_ReservaBasica();
@@ -101,6 +113,7 @@ void ejecuta_tests ()
 	test_CapacidadMaxSobrepasada();
 	test_ReservaSinSala();
 	test_reservas_multiples();
+	test_ReservaPrimerAsiento();
 }
 
 int main()
