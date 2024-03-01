@@ -61,12 +61,25 @@ void test_CapacidadCero(){
 	FIN_TEST("Capacidad Cero");
 }
 
+void test_CapacidadMaxSobrepasada(){
+  #define CAPACIDAD_MAX 1000
+  #define id_persona_de_mas 7
+  INICIO_TEST("Capacidad máxima sobrepasada");
+  for (int i = 1; i<=CAPACIDAD_MAX; i++){
+    reserva_asiento(i+10);
+  }
+  DebeSerCierto(reserva_asiento(id_persona_de_mas)==-1);
+  FIN_TEST("Capacidad máxima sobrepasada");
+}
+
+
 void ejecuta_tests ()
 {
 	test_ReservaBasica();
 	// Añadir nuevos tests
 	test_CapacidadNegativa();
 	test_CapacidadCero();
+	test_CapacidadMaxSobrepasada();
 }
 
 int main()
