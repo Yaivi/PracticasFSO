@@ -71,6 +71,9 @@ int crea_sala(int capacidad){
 	if (asientos == NULL){
 		return -1;
 	}
+	if (CAPACIDAD_MAXIMA == 0){
+	  return -1;
+	}
 	for (int count = 1; count <= CAPACIDAD_MAXIMA; count++){
 		*(asientos + count) = -1;
 	}
