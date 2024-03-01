@@ -71,7 +71,13 @@ void test_CapacidadMaxSobrepasada(){
   DebeSerCierto(reserva_asiento(id_persona_de_mas)==-1);
   FIN_TEST("Capacidad máxima sobrepasada");
 }
-
+void test_RerservaSinSala() {
+    int mi_asiento;
+    #define ID_2 100
+    INICIO_TEST("Reserva Sin Sala");
+    DebeSerCierto((mi_asiento=reserva_asiento(ID_2))<=-1);
+    FIN_TEST("Reserva Sin Sala");
+} 
 
 void ejecuta_tests ()
 {
@@ -80,6 +86,7 @@ void ejecuta_tests ()
 	test_CapacidadNegativa();
 	test_CapacidadCero();
 	test_CapacidadMaxSobrepasada();
+	test_ReservaSinSala();
 }
 
 int main()
