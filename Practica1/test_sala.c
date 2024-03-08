@@ -74,15 +74,28 @@ void test_CapacidadCero(){
 	FIN_TEST("Capacidad Cero");
 }
 
+void test_IdAsientoMayorQueCapacidad(){
+	#define CAPACIDAD_ID_ASIENTO_MAYOR_QUE_CAPACIDAD 1000
+	#define id_asiento_de_más 1001
+
+	INICIO_TEST("Asiento mayor que Capacidad");
+	crea_sala(CAPACIDAD_ID_ASIENTO_MAYOR_QUE_CAPACIDAD);
+	DebeSerCierto(libera_asiento(id_asiento_de_más)==-1);
+	DebeSerCierto(estado_asiento(id_asiento_de_más)==-1);
+	elimina_sala();
+	FIN_TEST("Asiento mayor que Capacidad");
+}
 
 void test_CapacidadMaxSobrepasada(){
 	#define CAPACIDAD_MAX 1000
 	#define id_persona_de_mas 7
 	INICIO_TEST("Capacidad máxima sobrepasada");
+	crea_sala(CAPACIDAD_MAX);
 	for (int i = 1; i<=CAPACIDAD_MAX; i++){
 	reserva_asiento(i+10);
 	}
 	DebeSerCierto(reserva_asiento(id_persona_de_mas)==-1);
+	elimina_sala();
 	FIN_TEST("Capacidad máxima sobrepasada");
 }
 
@@ -177,6 +190,7 @@ void ejecuta_tests ()
 	test_ReservaPrimerAsiento();
 	test_ReservaAsientoLiberado();
 	test_ReservasMultiples();
+	test_IdAsientoMayorQueCapacidad();
 }
 
 int main()
