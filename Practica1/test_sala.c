@@ -84,7 +84,7 @@ void test_ReservaSinSala() {
 }
 
 
-void test_reservas_multiples() {
+void test_ReservaVariosAsientos() {
 	int mi_asiento;
 	#define CAPACIDAD_TEATRO 10
 	#define ID_3 777
@@ -138,7 +138,7 @@ void ejecuta_tests ()
 	test_CapacidadCero();
 	test_CapacidadMaxSobrepasada();
 	test_ReservaSinSala();
-	test_reservas_multiples();
+	test_ReservaVariosAsientos();
 	test_ReservaPrimerAsiento();
 	test_ReservaAsientoLiberado();
 }
