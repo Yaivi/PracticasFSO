@@ -23,7 +23,19 @@ void FIN_TEST (const char* titulo_test)
   printf ("********** hecho\n");
 }
 
-
+	
+int reserva_multiple(int npersonas, int* lista_id){
+    if (asientos_libres()<npersonas) {
+	    return -1;
+    }
+    else {
+	for (int i = 0; i<npersonas; i++) {
+	    int id_actual =*(lista_id+i);
+	    reserva_asiento(id_actual);
+	}
+	return 0;
+    }
+}
 void test_ReservaBasica()
 {
 	int mi_asiento;
@@ -89,7 +101,7 @@ void test_ReservaVariosAsientos() {
 	#define CAPACIDAD_TEATRO 10
 	#define ID_3 777
 	int num_asientos = 7;
-	INICIO_TEST("Reservas multiples");
+	INICIO_TEST("Reservas varios asientos");
 	crea_sala(CAPACIDAD_TEATRO);
 	DebeSerCierto(capacidad_sala()==CAPACIDAD_TEATRO);
 	for (int i=0;i<num_asientos; i++) {
@@ -97,7 +109,7 @@ void test_ReservaVariosAsientos() {
 	}
 	DebeSerCierto(asientos_libres() == 3);
 	elimina_sala();
-	FIN_TEST("Reservas multiples");
+	FIN_TEST("Reservas varios asientos");
 }
 
 
@@ -129,6 +141,29 @@ void test_ReservaAsientoLiberado(){
 	FIN_TEST("Reserva asiento liberado");
 }
 
+void test_ReservasMultiples() {
+	#define capacidad_Sala_Multiple 5
+	int* listaIdGrupo1;
+	int ids1[6] = {22, 43, 67, 49, 62, 89};
+	int tamañoGrupo1 = sizeof(ids1)/sizeof(ids1[0]);
+	listaIdGrupo1 = ids1;
+	
+	int* listaIdGrupo2;
+	int ids2[3] = {22, 43, 67};
+	int tamañoGrupo2 = sizeof(ids2)/sizeof(ids2[0]);
+	listaIdGrupo2 = ids2;
+
+
+	INICIO_TEST("Reservas Múltiples");
+	crea_sala(capacidad_Sala_Multiple);
+	DebeSerCierto(reserva_multiple(tamañoGrupo1,listaIdGrupo1)==-1);
+	DebeSerCierto(reserva_multiple(tamañoGrupo2,listaIdGrupo2)==0);
+	DebeSerCierto(estado_asiento(1) == 22);
+	DebeSerCierto(estado_asiento(2) == 43);
+  	DebeSerCierto(estado_asiento(3) == 67);
+  	DebeSerCierto(estado_asiento(4) == 0);
+  	FIN_TEST("Reservas Múltiples");
+}
 
 void ejecuta_tests ()
 {
@@ -141,6 +176,7 @@ void ejecuta_tests ()
 	test_ReservaVariosAsientos();
 	test_ReservaPrimerAsiento();
 	test_ReservaAsientoLiberado();
+	test_ReservasMultiples();
 }
 
 int main()
