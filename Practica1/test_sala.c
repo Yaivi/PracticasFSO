@@ -54,6 +54,15 @@ void test_ReservaBasica()
 	FIN_TEST("Reserva básica");
 }
 
+void test_Id_Negativa() {
+    #define Capacidad_Salon 10
+    #define ID_Negativo -100
+    INICIO_TEST("ID Negativa");
+    crear_sala(Capacidad_Salon);
+    DebeSerCierto(reserva_asiento(ID_Negativo)==-1);
+    FIN_TEST("ID Negativa");
+    
+}
 
 void test_CapacidadNegativa(){
 	#define CAPACIDAD_MENOR_CERO -1000
@@ -182,15 +191,16 @@ void ejecuta_tests ()
 {
 	test_ReservaBasica();
 	// Añadir nuevos tests
+	test_Id_Negativa();
 	test_CapacidadNegativa();
 	test_CapacidadCero();
+	test_IdAsientoMayorQueCapacidad();
 	test_CapacidadMaxSobrepasada();
 	test_ReservaSinSala();
 	test_ReservaVariosAsientos();
 	test_ReservaPrimerAsiento();
 	test_ReservaAsientoLiberado();
 	test_ReservasMultiples();
-	test_IdAsientoMayorQueCapacidad();
 }
 
 int main()
