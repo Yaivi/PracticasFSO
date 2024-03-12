@@ -3,9 +3,9 @@
 #include "sala.h"
 
 int *asientos;
-int CAPACIDAD_MAXIMA;
-int asientos_libres_variable;
-int asientos_ocupados_variable;
+int CAPACIDAD_MAXIMA = -1;
+int asientos_libres_variable = -1;
+int asientos_ocupados_variable = -1;
 
 
 int comprueba_id_persona(int id_persona){
@@ -91,6 +91,7 @@ int capacidad_sala(){
 int crea_sala(int capacidad){
 	CAPACIDAD_MAXIMA = capacidad;
 	asientos_libres_variable = CAPACIDAD_MAXIMA;
+	asientos_ocupados_variable = 0;
 	asientos=(int*)malloc(CAPACIDAD_MAXIMA*sizeof(int));
 	
 	if (asientos == NULL){
@@ -113,5 +114,8 @@ int elimina_sala(){
 		return -1;
 	}
 	free(asientos);
+	CAPACIDAD_MAXIMA = -1;
+	asientos_libres_variable = -1;
+	asientos_ocupados_variable = -1;
 	return 0;
 }
