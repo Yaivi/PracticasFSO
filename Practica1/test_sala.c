@@ -176,18 +176,49 @@ void test_ReservasMultiples() {
 	DebeSerCierto(estado_asiento(2) == 43);
   	DebeSerCierto(estado_asiento(3) == 67);
   	DebeSerCierto(estado_asiento(4) == 0);
+  	elimina_sala();
   	FIN_TEST("Reservas Múltiples");
+}
+
+void test_PedirDatosSinSala() {
+
+    INICIO_TEST("Pedir datos sin sala");
+    DebeSerCierto(asientos_ocupados()==-1);
+    DebeSerCierto(asientos_libres()==-1);
+    DebeSerCierto(capacidad_sala()==-1);
+    FIN_TEST("Pedir datos sin sala");
+
+}
+
+void test_PedirDatosConSala() {
+    #define Capacidad_Sala_Datos 50
+    
+    INICIO_TEST("Pedir datos con sala");
+    DebeSerCierto(asientos_ocupados()==-1);
+    DebeSerCierto(asientos_libres()==-1);
+    DebeSerCierto(capacidad_sala()==-1);
+    crea_sala(Capacidad_Sala_Datos);
+    DebeSerCierto(asientos_ocupados()==0);
+    DebeSerCierto(asientos_libres()==50);
+    DebeSerCierto(capacidad_sala()==50);
+    elimina_sala();
+    FIN_TEST("Pedir datos con sala");
+
 }
 
 void test_Id_Negativa() {
     #define Capacidad_Salon 10
     #define ID_Negativo -100
     INICIO_TEST("ID Negativa");
-    crear_sala(Capacidad_Salon);
+    crea_sala(Capacidad_Salon);
     DebeSerCierto(reserva_asiento(ID_Negativo)==-1);
+    elimina_sala();
     FIN_TEST("ID Negativa");
-    
+   
 }
+
+
+
 
 void ejecuta_tests ()
 {
@@ -202,7 +233,11 @@ void ejecuta_tests ()
 	test_ReservaPrimerAsiento();
 	test_ReservaAsientoLiberado();
 	test_ReservasMultiples();
+	test_PedirDatosSinSala();
+	test_PedirDatosConSala();
+	
 	test_Id_Negativa();
+	
 }
 
 int main()
