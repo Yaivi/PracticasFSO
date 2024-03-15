@@ -226,6 +226,7 @@ void ejecuta_tests ()
 	// Añadir nuevos tests
 	test_CapacidadNegativa();
 	test_CapacidadCero();
+	test_Id_Negativa();
 	test_IdAsientoMayorQueCapacidad();
 	test_CapacidadMaxSobrepasada();
 	test_ReservaSinSala();
@@ -235,8 +236,6 @@ void ejecuta_tests ()
 	test_ReservasMultiples();
 	test_PedirDatosSinSala();
 	test_PedirDatosConSala();
-	
-	test_Id_Negativa();
 	
 }
 
