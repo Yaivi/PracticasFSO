@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <"unistd.h">
-#include <"string.h">
+#include <unistd.h>
+#include <string.h>
 #include "sala.h"
 
 void crea_sucursal (const char* ciudad, int capacidad);
