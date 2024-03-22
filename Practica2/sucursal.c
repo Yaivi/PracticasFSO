@@ -27,10 +27,15 @@ void crea_sucursal (const char* ciudad, int capacidad) {
 
 int main() {
     char nombresala[100];
+    char capacidadString[100];
     int capacidad;
     while (1) {
         fgets(nombresala, 100, stdin);
+
         nombresala[strcspn(nombresala, "\n")] = '\0';
+        
+        fgets(capacidadString, 100, stdin);
+        capacidad = atoi(capacidadString);
         
         // Pedir nombre de nueva sala y capacidad
         if (!strcmp("salir",nombresala)){
