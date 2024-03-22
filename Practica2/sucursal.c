@@ -10,22 +10,18 @@ void crea_sucursal (const char* ciudad, int capacidad) {
   // Crear un proceso hijo que lance una terminal donde se
   // ejecute el mini-shell añadido a la práctica 1
   // Deberás emplear las llamadas al sistema fork() y exec()
-  pid_t pid = fork();
+  int pid = fork();
   
   if (pid == -1){
     exit(-1);
   }
   if (pid == 0){
     // Proceso Hijo
-    //execl();
+    execlp("gnome-terminal", "gnome-terminal", 0);
     
-    //Si falla, hará exit(-1), este código no debería
-    //ejecutarse si todo va bien.
+    //Si falla, hará exit(-1), este código no debería ejecutarse si todo va bien.
     exit(-1);
   }
-  
-  
-
 }
 
 
