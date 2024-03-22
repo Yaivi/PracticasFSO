@@ -33,6 +33,9 @@ int main() {
     char nombresala[100];
     int capacidad;
     while (1) {
+        fgets(nombresala, 100, stdin);
+        nombresala[strcspn(nombresala, "\n")] = '\0';
+        
         // Pedir nombre de nueva sala y capacidad
         if (!strcmp("salir",nombresala)){
             break;
