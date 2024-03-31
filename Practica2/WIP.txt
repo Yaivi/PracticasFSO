@@ -1,0 +1,7 @@
+------REQUISITOS DE LA API------
+Si el usuario escribe salir, el programa para crear salas se acaba. ///COMPLETADO
+
+------FALLO A RESOLVER-------
+Conseguir que las frases no se repitan 2 veces/que no guarden el mismo dato.
+
+
