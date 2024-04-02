@@ -2,7 +2,10 @@
 Si el usuario escribe salir, el programa para crear salas se acaba. ///COMPLETADO
 Mini-shell para reservar/liberar/mirar estado de un asiento y también de eliminar sala.
 
+
+------FALLO RESUELTOS-------
+Conseguir que las frases no se repitan 2 veces/que no guarden el mismo dato.
+
 ------FALLO A RESOLVER-------
-1. Conseguir que las frases no se repitan 2 veces/que no guarden el mismo dato.
-2. 
+
 
