@@ -26,21 +26,25 @@ void crea_sucursal (const char* ciudad, int capacidad) {
 
 
 int main() {
-    char nombresala[100];
-    char capacidadString[100];
+    #define MAX_LENGTH_NAME 100
+    #define MAX_LENGTH_CAPACITY 100
+    char nombresala[MAX_LENGTH_NAME];
+    char capacidadString[MAX_LENGTH_CAPACITY];
     int capacidad;
     while (1) {
-        fgets(nombresala, 100, stdin);
-
+        printf("Introduzca el nombre de la sucursal:\n");
+        fgets(nombresala, MAX_LENGTH_NAME, stdin);
         nombresala[strcspn(nombresala, "\n")] = '\0';
-        
-        fgets(capacidadString, 100, stdin);
-        capacidad = atoi(capacidadString);
-        
+                
         // Pedir nombre de nueva sala y capacidad
         if (!strcmp("salir",nombresala)){
             break;
         }
+        
+        printf("Introduzca la capacidad de la sucursal:\n");
+        fgets(capacidadString, MAX_LENGTH_CAPACITY, stdin);
+        capacidad = atoi(capacidadString);
+        
         crea_sucursal (nombresala, capacidad);
         } // termina el bucle principal
 }
