@@ -123,8 +123,8 @@ int elimina_sala(){
 	return 0;
 }
 
-int main(){
-  crea_sala(10000); // ESTO ES DE PRUEBA; HABRÁ QUE MODIFICARLO MÁS ADELANTE
+int main(int argc, char *argv[]){
+  crea_sala(argv[1]); // ESTO ES DE PRUEBA; HABRÁ QUE MODIFICARLO MÁS ADELANTE
   
   char input_usuario[100];
   int opcion_usuario;
