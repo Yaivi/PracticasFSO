@@ -123,6 +123,7 @@ int elimina_sala(){
 	return 0;
 }
 
+
 int main(int argc, char *argv[]){
   int capacidad;
   sscanf(argv[1], "%d", &capacidad);
@@ -168,6 +169,7 @@ int main(int argc, char *argv[]){
 	  	case 4:
 	  		opcion_usuario = 0;	  	
 	  		printf("Ha seleccionado cerrar y eliminar sala.\n");
+	  		printf("La sala ha cerrada correctamente.");
 	  		elimina_sala();
 			exit(0);
 	  		break;	  	
