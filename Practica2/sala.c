@@ -169,6 +169,7 @@ int main(int argc, char *argv[]){
 	  		opcion_usuario = 0;	  	
 	  		printf("Ha seleccionado cerrar y eliminar sala.\n");
 	  		elimina_sala();
+			exit(0);
 	  		break;	  	
 	  	default:
 	  		printf("Opción inválida. Escriba un número válido.\n");
