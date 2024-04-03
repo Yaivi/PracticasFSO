@@ -124,7 +124,9 @@ int elimina_sala(){
 }
 
 int main(int argc, char *argv[]){
-  crea_sala(argv[1]); // ESTO ES DE PRUEBA; HABRÁ QUE MODIFICARLO MÁS ADELANTE
+  int capacidad;
+  sscanf(argv[1], "%d", &capacidad);
+  crea_sala(capacidad); // Crea una capacidad con el valor de argv[1]
   
   char input_usuario[100];
   int opcion_usuario;
