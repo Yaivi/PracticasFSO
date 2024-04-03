@@ -124,6 +124,7 @@ int elimina_sala(){
 }
 
 int main(){
+  crea_sala(10000); // ESTO ES DE PRUEBA; HABRÁ QUE MODIFICARLO MÁS ADELANTE
   
   char input_usuario[100];
   int opcion_usuario;
@@ -140,10 +141,35 @@ int main(){
 	  
 	  switch (opcion_usuario){
 	  	case 1:
-	  		printf("Ha seleccionado reservar asiento");
+	  		opcion_usuario = 0;
+	  		printf("Ha seleccionado reservar asiento.\n");
+	  		printf("Escriba el id de la persona que va a reservar el asiento.\n");
+	  		fgets(input_usuario, sizeof(input_usuario), stdin);
+	  		sscanf(input_usuario, "%d", &opcion_usuario);
+	  		int asiento_reservado = reserva_asiento(opcion_usuario);
+	  		printf("%d", asiento_reservado);
 	  		break;
+	  	case 2:
+	  		opcion_usuario = 0;	  	
+	  		printf("Ha seleccionado liberar asiento.\n");
+	  		printf("Escriba el id del asiento a liberar.\n");
+	  		fgets(input_usuario, sizeof(input_usuario), stdin);
+	  		sscanf(input_usuario, "%d", &opcion_usuario);
+	  		int asiento_liberado = libera_asiento(opcion_usuario);
+	  		printf("%d", asiento_liberado);
+	  		break;
+	  	case 3:
+            opcion_usuario = 0;
+	  		printf("Ha seleccionado mirar estado de un asiento.\n");
+	  		printf("Escriba el asiento para mirar su estado.\n");
+	  		break;	  	
+	  	case 4:
+	  		opcion_usuario = 0;	  	
+	  		printf("Ha seleccionado cerrar y eliminar sala.\n");
+	  		elimina_sala();
+	  		break;	  	
 	  	default:
-	  		printf("Opción inválida. Escriba un número válido");
+	  		printf("Opción inválida. Escriba un número válido.\n");
 	  		break;
   	}
   }
