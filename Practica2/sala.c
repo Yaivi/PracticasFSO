@@ -126,28 +126,26 @@ int elimina_sala(){
 int main(){
   
   char input_usuario[100];
+  int opcion_usuario;
   
-  printf("\nEscriba el número de la instrucción: \n");
-  printf("1. Reserva asiento (reserva <id-persona>).\n");
-  printf("2. Liberar asiento (libera <id-persona>).\n");
-  printf("3. Estado del asiento (estado_asiento <id-asiento>).\n");
-  printf("4. Cerrar y eliminar sala (cerrar_sala).\n");
-  
-  fgets(input_usuario, 100, stdin); // Pide al usuario por pantalla que escriba la orden deseada
-  input_usuario[strcspn(input_usuario, "\n")] = '\0';
-
-  //int input_usuario_int = input_usuario - '0'; 
-  
-  printf("Orden: %s\n", input_usuario);
-  if (input_usuario == "1"){
-    printf("Indice el número del asiento");
+  while (1){
+	  printf("\nEscriba el número de la instrucción: \n");
+	  printf("1. Reserva asiento (reserva <id-persona>).\n");
+	  printf("2. Liberar asiento (libera <id-persona>).\n");
+	  printf("3. Estado del asiento (estado_asiento <id-asiento>).\n");
+	  printf("4. Cerrar y eliminar sala (cerrar_sala).\n");
+	  
+	  fgets(input_usuario, sizeof(input_usuario), stdin); // Pide al usuario por pantalla que escriba la orden deseada
+	  sscanf(input_usuario, "%d", &opcion_usuario); // Convierte lo escrito por el usuario a int
+	  
+	  switch (opcion_usuario){
+	  	case 1:
+	  		printf("Ha seleccionado reservar asiento");
+	  		break;
+	  	default:
+	  		printf("Opción inválida. Escriba un número válido");
+	  		break;
+  	}
   }
-  if (input_usuario == "2"){
-  }
-  if (input_usuario == "3"){
-  }
-  if (input_usuario == "4"){
-  }
-  
   return 0;
 }
