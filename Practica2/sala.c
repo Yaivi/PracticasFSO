@@ -132,6 +132,7 @@ int main(int argc, char *argv[]){
   char input_usuario[100];
   int opcion_usuario;
   
+  printf("---Bienvenido a la sucursal en %s---\n", argv[1]);
   while (1){
 	  printf("\nEscriba el número de la instrucción: \n");
 	  printf("1. Reserva asiento (reserva <id-persona>).\n");
