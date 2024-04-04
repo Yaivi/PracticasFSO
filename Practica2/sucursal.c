@@ -17,9 +17,12 @@ void crea_sucursal (const char* ciudad, int capacidad) {
   }
   if (pid == 0){
     // Proceso Hijo
-    execlp("xterm", "xterm", "-e", "Documentos/Practica2/menu", ciudad, capacidad, NULL);
+    char capacidadChar[20];
+    snprintf(capacidadChar, sizeof(capacidadChar), "%d", capacidad);
+    execlp("xterm", "xterm", "-e", "c/Practica02/sala", ciudad, capacidadChar, NULL);
     
     //Si falla, hará exit(-1), este código no debería ejecutarse si todo va bien.
+    printf("Algo ha fallado.\n");
     exit(-1);
   }
 }  
@@ -44,7 +47,7 @@ int main() {
         
         printf("Introduzca la capacidad de la sucursal:\n");
         fgets(capacidadString, MAX_LENGTH_CAPACITY, stdin);
-        capacidad = atoi(capacidadString);
+        sscanf(capacidadString, "%d", &capacidad);
         
         crea_sucursal (nombresala, capacidad);
         } // termina el bucle principal
