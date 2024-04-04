@@ -126,7 +126,7 @@ int elimina_sala(){
 
 int main(int argc, char *argv[]){
   int capacidad;
-  sscanf(argv[1], "%d", &capacidad);
+  sscanf(argv[2], "%d", &capacidad);
   crea_sala(capacidad); // Crea una capacidad con el valor de argv[1]
   
   char input_usuario[100];
@@ -151,7 +151,7 @@ int main(int argc, char *argv[]){
 	  		fgets(input_usuario, sizeof(input_usuario), stdin);
 	  		sscanf(input_usuario, "%d", &opcion_usuario);
 	  		int asiento_reservado = reserva_asiento(opcion_usuario);
-	  		printf("%d", asiento_reservado);
+	  		printf("El asiento reservado es el %d\n", asiento_reservado);
 	  		break;
 	  	case 2:
 	  		opcion_usuario = 0;	  	
@@ -170,8 +170,8 @@ int main(int argc, char *argv[]){
 	  	case 4:
 	  		opcion_usuario = 0;	  	
 	  		printf("Ha seleccionado cerrar y eliminar sala.\n");
-	  		printf("La sala ha cerrada correctamente.");
 	  		elimina_sala();
+	  		sleep(10); // Tiempo en s de espera antes de cerrar.
 			exit(0);
 	  		break;	  	
 	  	default:
