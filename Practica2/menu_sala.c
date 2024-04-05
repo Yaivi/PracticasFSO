@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
 	  		opcion_usuario = 0;	  	
 	  		printf("Ha seleccionado cerrar y eliminar sala.\n");
 	  		elimina_sala();
-	  		sleep(10); // Tiempo en s de espera antes de cerrar.
+	  		sleep(5); // Tiempo en s de espera antes de cerrar.
 			exit(0);
 	  		break;	  	
 	  	default:
