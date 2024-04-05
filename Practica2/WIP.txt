@@ -5,9 +5,11 @@ Mini-shell para reservar/liberar/mirar estado de un asiento y también de elimin
 
 ------FALLO RESUELTOS-------
 Conseguir que las frases no se repitan 2 veces/que no guarden el mismo dato.
+Comprobar que la capacidad se esté guardando correctamente como int.
 
 
 ------FALLO A RESOLVER-------
+Obtener el pid del hijo cuando este se cierre y que se muestre en el shell padre.
 Arreglar el valor de la capacidad máxima permitida.
-Comprobar que la capacidad se esté guardando correctamente como int.
-Comprobar los int e char de entrada.
+Comprobar los int y char de entrada en el mini-shell.
+Factorizar el mini-shell.
