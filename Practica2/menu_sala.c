@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[]){
   int capacidad;
-  sscanf(argv[2], "%d", &capacidad);
+  capacidad = atoi(argv[2]);
   crea_sala(capacidad); // Crea una capacidad con el valor de argv[1]
   
   char input_usuario[100];
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
 	  		printf("%d", asiento_liberado);
 	  		break;
 	  	case 3:
-            opcion_usuario = 0;
+                        opcion_usuario = 0;
 	  		printf("Ha seleccionado mirar estado de un asiento.\n");
 	  		printf("Escriba el asiento para mirar su estado.\n");
 	  		break;	  	
