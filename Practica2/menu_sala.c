@@ -4,6 +4,13 @@
 #include <string.h>
 #include "sala.h"
 
+int comprobar_valor(int opcion_usuario){
+  if (opcion_usuario <= 0){
+    return -1;
+  }else{
+    return 0;
+  }
+}
 
 int main(int argc, char *argv[]){
   int capacidad;
@@ -33,7 +40,11 @@ int main(int argc, char *argv[]){
 	  		printf("Ha seleccionado reservar asiento.\n");
 	  		printf("Escriba el id de la persona que va a reservar el asiento.\n");
 	  		fgets(input_usuario, sizeof(input_usuario), stdin);
-	  		sscanf(input_usuario, "%d", &opcion_usuario);
+	  		opcion_usuario = atoi(input_usuario);
+	  		if (comprobar_valor(opcion_usuario) == -1){
+	  		  printf("Valor introducido no válido.\n");
+	  		  break;
+	  		}
 	  		int asiento_reservado = reserva_asiento(opcion_usuario);
 	  		printf("El asiento reservado es el %d\n", asiento_reservado);
 	  		break;
@@ -42,16 +53,24 @@ int main(int argc, char *argv[]){
 	  		printf("Ha seleccionado liberar asiento.\n");
 	  		printf("Escriba el id del asiento a liberar.\n");
 	  		fgets(input_usuario, sizeof(input_usuario), stdin);
-	  		sscanf(input_usuario, "%d", &opcion_usuario);
+	  		opcion_usuario = atoi(input_usuario);
+	  		if (comprobar_valor(opcion_usuario) == -1){
+	  		  printf("Valor introducido no válido.\n");
+	  		  break;
+	  		}
 	  		int asiento_liberado = libera_asiento(opcion_usuario);
-	  		printf("%d", asiento_liberado);
+	  		printf("Se ha liberado el asiento %d", asiento_liberado);
 	  		break;
 	  	case 3:
                         opcion_usuario = 0;
 	  		printf("Ha seleccionado mirar estado de un asiento.\n");
 	  		printf("Escriba el asiento para mirar su estado.\n");
 			fgets(input_usuario, sizeof(input_usuario), stdin);
-			sscanf(input_usuario, "%d", &opcion_usuario);
+	  		opcion_usuario = atoi(input_usuario);
+	  		if (comprobar_valor(opcion_usuario) == -1){
+	  		  printf("Valor introducido no válido.\n");
+	  		  break;
+	  		}
 			printf("El estado del asiento %d es %d\n", opcion_usuario, estado_asiento(opcion_usuario));
 	  		break;	  	
 		case 4:
