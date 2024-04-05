@@ -37,7 +37,7 @@ void crea_sucursal (const char* ciudad, int capacidad) {
   }
 }  
 
-int ComprobarSala(int capacidad){
+int comprobar_sala(int capacidad){
   if (capacidad <= 0){
     return -1;
   } else{
@@ -73,7 +73,7 @@ int main() {
         fgets(capacidadString, MAX_LENGTH_CAPACITY, stdin);
         capacidad = atoi(capacidadString);
 
-        if (ComprobarSala(capacidad) == -1){
+        if (comprobar_sala(capacidad) == -1){
           printf("Capacidad introducida no válida\n");
           continue;
         }
