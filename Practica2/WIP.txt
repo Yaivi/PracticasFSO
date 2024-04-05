@@ -1,6 +1,6 @@
 ------REQUISITOS DE LA API------
 Si el usuario escribe salir, el programa para crear salas se acaba. ///COMPLETADO
-Mini-shell para reservar/liberar/mirar estado de un asiento y también de eliminar sala. // MÁS O MENOS
+Mini-shell para reservar/liberar/mirar estado de un asiento y también de eliminar sala. // COMPLETADO
 
 
 ------FALLO RESUELTOS-------
