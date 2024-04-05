@@ -20,11 +20,11 @@ int main(int argc, char *argv[]){
   char input_usuario[100];
   int opcion_usuario;
   
-  printf("---Bienvenido a la sucursal en %s---\n", argv[1]);
+  printf("---Bienvenido a la sala en %s---\n", argv[1]);
   while (1){
 	  printf("\nEscriba el número de la instrucción: \n");
 	  printf("1. Reserva asiento (reserva <id-persona>).\n");
-	  printf("2. Liberar asiento (libera <id-persona>).\n");
+	  printf("2. Liberar asiento (libera <id-asiento>).\n");
 	  printf("3. Estado del asiento (estado_asiento <id-asiento>).\n");
 	  printf("4. Mirar el número de asientos libres.\n");
 	  printf("5. Mirar el número de asientos ocupados.\n");
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]){
 	  		  break;
 	  		}
 	  		int asiento_reservado = reserva_asiento(opcion_usuario);
-	  		printf("El asiento reservado es el %d\n", asiento_reservado);
+	  		printf("El asiento reservado es el número %d.\n", asiento_reservado);
 	  		break;
 	  	case 2:
 	  		opcion_usuario = 0;	  	
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
 	  		  break;
 	  		}
 	  		int asiento_liberado = libera_asiento(opcion_usuario);
-	  		printf("Se ha liberado el asiento %d", asiento_liberado);
+	  		printf("Se ha liberado el asiento número %d, que pertenecía a la persona %d.", opcion_usuario, asiento_liberado);
 	  		break;
 	  	case 3:
                         opcion_usuario = 0;
@@ -71,12 +71,12 @@ int main(int argc, char *argv[]){
 	  		  printf("Valor introducido no válido.\n");
 	  		  break;
 	  		}
-			printf("El estado del asiento %d es %d\n", opcion_usuario, estado_asiento(opcion_usuario));
+			printf("El estado del asiento número %d es %d.\n", opcion_usuario, estado_asiento(opcion_usuario));
 	  		break;	  	
 		case 4:
                         opcion_usuario = 0;
 	  		printf("Ha seleccionado mirar el número de asientos libres.\n");
-			printf("Hay %d asientos libres\n", asientos_libres());
+			printf("Hay %d asientos libres actualmente. \n", asientos_libres());
 	  		break;		  
 		case 5:
                         opcion_usuario = 0;
