@@ -47,7 +47,11 @@ int main() {
         
         printf("Introduzca la capacidad de la sucursal:\n");
         fgets(capacidadString, MAX_LENGTH_CAPACITY, stdin);
-        sscanf(capacidadString, "%d", &capacidad);
+        capacidad = atoi(capacidadString);
+
+        if (capacidad == 0){
+          printf("Capacidad introducida no válida");
+        }
         
         crea_sucursal (nombresala, capacidad);
         } // termina el bucle principal
