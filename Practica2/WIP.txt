@@ -9,7 +9,8 @@ Comprobar que la capacidad se esté guardando correctamente como int.
 
 
 ------FALLO A RESOLVER-------
-Obtener el pid del hijo cuando este se cierre y que se muestre en el shell padre.
-Arreglar el valor de la capacidad máxima permitida.
-Comprobar los int y char de entrada en el mini-shell.
-Factorizar el mini-shell.
+- Obtener el pid del hijo cuando este se cierre y que se muestre en el shell padre.
+- Arreglar el valor de la capacidad máxima permitida. ???
+- Comprobar los int y char de entrada en el mini-shell.
+- Factorizar el mini-shell.
+- Convertir los sscanf del mini-shell a atoi.
