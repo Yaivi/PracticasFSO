@@ -19,7 +19,10 @@ int main(int argc, char *argv[]){
 	  printf("1. Reserva asiento (reserva <id-persona>).\n");
 	  printf("2. Liberar asiento (libera <id-persona>).\n");
 	  printf("3. Estado del asiento (estado_asiento <id-asiento>).\n");
-	  printf("4. Cerrar y eliminar sala (cerrar_sala).\n");
+	  printf("4. Mirar el número de asientos libres.\n");
+	  printf("5. Mirar el número de asientos ocupados.\n");
+	  printf("6. Mirar la capacidad de la sala.\n");
+	  printf("7. Cerrar y eliminar sala (cerrar_sala).\n");
 	  
 	  fgets(input_usuario, sizeof(input_usuario), stdin); // Pide al usuario por pantalla que escriba la orden deseada
 	  sscanf(input_usuario, "%d", &opcion_usuario); // Convierte lo escrito por el usuario a int
@@ -47,8 +50,26 @@ int main(int argc, char *argv[]){
                         opcion_usuario = 0;
 	  		printf("Ha seleccionado mirar estado de un asiento.\n");
 	  		printf("Escriba el asiento para mirar su estado.\n");
+			fgets(input_usuario, sizeof(input_usuario), stdin);
+			sscanf(input_usuario, "%d", &opcion_usuario);
+			printf("El estado del asiento %d es %d\n, opcion_usuario, estado_asiento(opcion_usuario));
 	  		break;	  	
-	  	case 4:
+		case 4:
+                        opcion_usuario = 0;
+	  		printf("Ha seleccionado mirar el número de asientos libres.\n");
+			printf("Hay %d asientos libres\n", asientos_libres());
+	  		break;		  
+		case 5:
+                        opcion_usuario = 0;
+	  		printf("Ha seleccionado mirar el número de asientos ocupados.\n");
+			printf("Hay %d asientos ocupados.\n", asientos_ocupados());
+	  		break;		
+		case 6:
+                        opcion_usuario = 0;
+	  		printf("Ha seleccionado mirar la capacidad de la sala.\n");
+			printf("Hay %d asientos en la sala.\n", capacidad_sala());
+	  		break;		  
+		case 7:
 	  		opcion_usuario = 0;	  	
 	  		printf("Ha seleccionado cerrar y eliminar sala.\n");
 	  		elimina_sala();
