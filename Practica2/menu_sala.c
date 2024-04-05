@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
 	  		printf("Escriba el asiento para mirar su estado.\n");
 			fgets(input_usuario, sizeof(input_usuario), stdin);
 			sscanf(input_usuario, "%d", &opcion_usuario);
-			printf("El estado del asiento %d es %d\n, opcion_usuario, estado_asiento(opcion_usuario));
+			printf("El estado del asiento %d es %d\n", opcion_usuario, estado_asiento(opcion_usuario));
 	  		break;	  	
 		case 4:
                         opcion_usuario = 0;
