@@ -17,6 +17,12 @@ int comprueba_id_persona(int id_persona){
 	return 0;
 }
 
+int comprueba_id_sala(int asientos_libres){
+	if (asientos_libres < 0){
+		return -1;
+	}
+	return 0;
+}
 
 int comprueba_id_asiento(int id_asiento){
 	if (id_asiento < 0){
