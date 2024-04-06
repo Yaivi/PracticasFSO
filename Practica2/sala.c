@@ -118,14 +118,15 @@ int crea_sala(int capacidad){
 	CAPACIDAD_MAXIMA = capacidad;
 	asientos_libres_variable = CAPACIDAD_MAXIMA;
 	asientos_ocupados_variable = 0;
-	asientos=(int*)malloc(CAPACIDAD_MAXIMA*sizeof(int));
-	
-	if (asientos == NULL){
-	    return -1;
-	}
 	
 	if (CAPACIDAD_MAXIMA <= 0){
 	  return -1;
+	}
+
+        asientos=(int*)malloc(CAPACIDAD_MAXIMA*sizeof(int));
+	
+	if (asientos == NULL){
+	    return -1;
 	}
 	
 	for (int count = 1; count <= CAPACIDAD_MAXIMA; count++){
