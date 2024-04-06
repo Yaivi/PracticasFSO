@@ -4,6 +4,14 @@
 #include <string.h>
 #include "sala.h"
 
+
+int leer_valor_usuario(char *input_usuario){
+  int opcion_usuario;
+  fgets(input_usuario, sizeof(input_usuario), stdin);
+  opcion_usuario = atoi(input_usuario);
+  return opcion_usuario;
+}
+
 int comprobar_valor(int opcion_usuario){
   if (opcion_usuario <= 0){
     return -1;
@@ -12,10 +20,11 @@ int comprobar_valor(int opcion_usuario){
   }
 }
 
+
 int main(int argc, char *argv[]){
   int capacidad;
   capacidad = atoi(argv[2]);
-  crea_sala(capacidad); // Crea una capacidad con el valor de argv[1]
+  crea_sala(capacidad); // Crea una capacidad con el valor de argv[2]
   
   char input_usuario[100];
   int opcion_usuario;
@@ -39,8 +48,7 @@ int main(int argc, char *argv[]){
 	  		opcion_usuario = 0;
 	  		printf("Ha seleccionado reservar asiento.\n");
 	  		printf("Escriba el id de la persona que va a reservar el asiento.\n");
-	  		fgets(input_usuario, sizeof(input_usuario), stdin);
-	  		opcion_usuario = atoi(input_usuario);
+                        opcion_usuario = leer_valor_usuario(input_usuario);
 	  		if (comprobar_valor(opcion_usuario) == -1){
 	  		  printf("Valor introducido no válido.\n");
 	  		  break;
@@ -52,8 +60,7 @@ int main(int argc, char *argv[]){
 	  		opcion_usuario = 0;	  	
 	  		printf("Ha seleccionado liberar asiento.\n");
 	  		printf("Escriba el id del asiento a liberar.\n");
-	  		fgets(input_usuario, sizeof(input_usuario), stdin);
-	  		opcion_usuario = atoi(input_usuario);
+                        opcion_usuario = leer_valor_usuario(input_usuario);
 	  		if (comprobar_valor(opcion_usuario) == -1){
 	  		  printf("Valor introducido no válido.\n");
 	  		  break;
@@ -65,8 +72,7 @@ int main(int argc, char *argv[]){
                         opcion_usuario = 0;
 	  		printf("Ha seleccionado mirar estado de un asiento.\n");
 	  		printf("Escriba el asiento para mirar su estado.\n");
-			fgets(input_usuario, sizeof(input_usuario), stdin);
-	  		opcion_usuario = atoi(input_usuario);
+                        opcion_usuario = leer_valor_usuario(input_usuario);
 	  		if (comprobar_valor(opcion_usuario) == -1){
 	  		  printf("Valor introducido no válido.\n");
 	  		  break;
