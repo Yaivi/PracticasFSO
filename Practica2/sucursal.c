@@ -36,7 +36,7 @@ void crea_sucursal (const char* ciudad, int capacidad) {
             strncpy(nombres_salas[i], ciudad, 100);
             break;
         }
-      }//añadimos el pid del hijo y el nombre en la misma pos de sus respectivas listas
+      }//añadimos el pid del hijo
   }
 }  
 
@@ -55,22 +55,30 @@ int main() {
     char nombresala[MAX_LENGTH_NAME];
     char capacidadString[MAX_LENGTH_CAPACITY];
     int capacidad;
-    char sala_acabada[MAX_LENGTH_NAME];
+    char salas_acabadas[MAX_LENGTH_NAME];
+    int num_salas_acabadas = 0; // Contador de salas cerradas
     pid_t pid_terminado;
+    
     while (1) {
-        pid_terminado = waitpid(-1, NULL, WNOHANG);
-        
-        if (pid_terminado > 0) {
-          for (int i = 0; i < 100; i++) {
-                  if (lista_pid[i] == pid_terminado) {
-                      strcpy(sala_acabada, nombres_salas[i]);
-                      nombres_salas[i][0] = '\0'; 
-                      lista_pid[i] = 0;
-                      break;
-                  }
-              }
-          printf("Proceso hijo con PID-%d, y nombre de sala: %s. Ha terminado.\n", pid_terminado, sala_acabada);
-        } 
+        while ((pid_terminado = waitpid(-1, NULL, WNOHANG)) > 0) {
+            for (int i = 0; i < 100; i++) {
+                if (lista_pid[i] == pid_terminado && num_salas_acabadas == 0) {
+                    strcpy(salas_acabadas, nombres_salas[i]);
+                    nombres_salas[i][0] = '\0'; 
+                    lista_pid[i] = 0;
+                    num_salas_acabadas++;
+                    break;
+                } else if (lista_pid[i] == pid_terminado && num_salas_acabadas >= 1) {
+                    strcat(salas_acabadas, ", ");
+                    strcat(salas_acabadas, nombres_salas[i]);
+                    num_salas_acabadas++;
+                }
+            }
+        }
+        if (num_salas_acabadas > 0) {
+              printf("Se han cerrado las siguientes salas: %s.\n", salas_acabadas);
+              num_salas_acabadas = 0;
+        }
         printf("Introduzca el nombre de la sucursal:\n");
         fgets(nombresala, MAX_LENGTH_NAME, stdin);
         nombresala[strcspn(nombresala, "\n")] = '\0';
@@ -85,11 +93,13 @@ int main() {
         capacidad = atoi(capacidadString);
 
         if (ComprobarSala(capacidad) == -1){
-          printf("Capacidad introducida no válida\n");
-          continue;
+            printf("Capacidad introducida no válida\n");
+            continue;
         }
         
-        crea_sucursal (nombresala, capacidad);
-        } // termina el bucle principal
-        
+        crea_sucursal(nombresala, capacidad);
+    } // termina el bucle principal
+    
+    
+    return 0;
 }
