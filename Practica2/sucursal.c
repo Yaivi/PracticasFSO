@@ -9,6 +9,7 @@ void crea_sucursal (const char* ciudad, int capacidad);
 int lista_pid[100]; //Para ir guardando los pid en esta lista, y borrarlos luego al ir cerrándolos, 
                     //principal uso, para copiar el pid si más de un proceso se cierra al mismo tiempo
                     //y poder imprimirlo en por pantalla.
+char nombres_salas[100][100]; // Lista para almacenar nombres de salas
 
 void crea_sucursal (const char* ciudad, int capacidad) {
   // Crear un proceso hijo que lance una terminal donde se
@@ -32,12 +33,14 @@ void crea_sucursal (const char* ciudad, int capacidad) {
       for (int i = 0; i<100;i++) {
         if (lista_pid[i] == 0) {
             lista_pid[i] = pid;
+            strncpy(nombres_salas[i], ciudad, 100);
+            break;
         }
-      }//añadimos el pid del hijo
+      }//añadimos el pid del hijo y el nombre en la misma pos de sus respectivas listas
   }
 }  
 
-int comprobar_sala(int capacidad){
+int ComprobarSala(int capacidad){
   if (capacidad <= 0){
     return -1;
   } else{
@@ -52,14 +55,22 @@ int main() {
     char nombresala[MAX_LENGTH_NAME];
     char capacidadString[MAX_LENGTH_CAPACITY];
     int capacidad;
-    int num_procesos_acabados;
+    char sala_acabada[MAX_LENGTH_NAME];
     pid_t pid_terminado;
     while (1) {
         pid_terminado = waitpid(-1, NULL, WNOHANG);
         
         if (pid_terminado > 0) {
-            printf("Proceso hijo con PID %d ha terminado.\n", pid_terminado);
-        }
+          for (int i = 0; i < 100; i++) {
+                  if (lista_pid[i] == pid_terminado) {
+                      strcpy(sala_acabada, nombres_salas[i]);
+                      nombres_salas[i][0] = '\0'; 
+                      lista_pid[i] = 0;
+                      break;
+                  }
+              }
+          printf("Proceso hijo con PID-%d, y nombre de sala: %s. Ha terminado.\n", pid_terminado, sala_acabada);
+        } 
         printf("Introduzca el nombre de la sucursal:\n");
         fgets(nombresala, MAX_LENGTH_NAME, stdin);
         nombresala[strcspn(nombresala, "\n")] = '\0';
@@ -73,7 +84,7 @@ int main() {
         fgets(capacidadString, MAX_LENGTH_CAPACITY, stdin);
         capacidad = atoi(capacidadString);
 
-        if (comprobar_sala(capacidad) == -1){
+        if (ComprobarSala(capacidad) == -1){
           printf("Capacidad introducida no válida\n");
           continue;
         }
