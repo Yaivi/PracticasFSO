@@ -76,7 +76,7 @@ int main() {
             }
         }
         if (num_salas_acabadas > 0) {
-              printf("Se han cerrado las siguientes salas: %s.\n", salas_acabadas);
+              printf("Se han cerrado %d salas: %s.\n", num_salas_acabadas, salas_acabadas);
               num_salas_acabadas = 0;
         }
         printf("Introduzca el nombre de la sucursal:\n");
