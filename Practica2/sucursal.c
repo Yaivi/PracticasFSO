@@ -27,7 +27,7 @@ void crea_sucursal (const char* ciudad, int capacidad) {
     execlp("xterm", "xterm", "-e", "./menu_sala", ciudad, capacidadChar, NULL);
     
     //Si falla, hará exit(-1), este código no debería ejecutarse si todo va bien.
-    printf("Algo ha fallado.\n");
+    perror("Algo ha fallado.\n");
     exit(-1);
   } else {
       for (int i = 0; i<100;i++) {
