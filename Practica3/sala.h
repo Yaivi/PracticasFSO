@@ -45,3 +45,19 @@ int crea_sala (int capacidad);
 //   0 si ha funcionado correctamente
 //   -1 si ha habido algún error
 int elimina_sala();
+
+
+//
+int guarda_estado_sala(const	char*	ruta_fichero);
+
+
+//
+int recupera_estado_sala(const	char*	ruta_fichero);
+
+
+//
+int	guarda_estadoparcial_sala(const char*	ruta_fichero,	size_t num_asientos,	int*	id_asientos);
+
+
+//
+int	recupera_estadoparcial_sala(const	char*	ruta_fichero, size_t num_asientos, int*	id_asientos);
