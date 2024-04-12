@@ -17,7 +17,7 @@ int comprueba_id_persona(int id_persona){
 	return 0;
 }
 
-int comprueba_sala(int asientos_libres){
+int comprueba_sala(){
 	if (asientos_libres < 0){
 		return -1;
 	}
@@ -37,7 +37,7 @@ int comprueba_id_asiento(int id_asiento){
 
 
 int reserva_asiento(int id_persona){
-        if (comprueba_sala(asientos_libres_variable) == -1){
+        if (comprueba_sala() == -1){
                 return -1; 
         }
 	// Si el id_persona es menor que 0 dará error.
@@ -60,7 +60,7 @@ int reserva_asiento(int id_persona){
 
 
 int libera_asiento(int id_asiento){
-        if (comprueba_sala(asientos_libres_variable) == -1){
+        if (comprueba_sala() == -1){
                 return -1; 
         }
         if (comprueba_id_asiento(id_asiento) == -1){
@@ -75,7 +75,7 @@ int libera_asiento(int id_asiento){
 
 
 int estado_asiento(int id_asiento){
-        if (comprueba_sala(asientos_libres_variable) == -1){
+        if (comprueba_sala() == -1){
                 return -1; 
         }
         if (comprueba_id_asiento(id_asiento)){
@@ -91,7 +91,7 @@ int estado_asiento(int id_asiento){
 
 
 int asientos_libres(){
-        if (comprueba_sala(asientos_libres_variable) == -1){
+        if (comprueba_sala() == -1){
                 return -1; 
         }
 	return asientos_libres_variable;
@@ -99,7 +99,7 @@ int asientos_libres(){
 
 
 int asientos_ocupados(){
-        if (comprueba_sala(asientos_libres_variable) == -1){
+        if (comprueba_sala() == -1){
                 return -1; 
         }
         return asientos_ocupados_variable;
@@ -107,7 +107,7 @@ int asientos_ocupados(){
 
 
 int capacidad_sala(){
-        if (comprueba_sala(asientos_libres_variable) == -1){
+        if (comprueba_sala() == -1){
                 return -1; 
         }
 	return CAPACIDAD_MAXIMA;
@@ -138,7 +138,7 @@ int crea_sala(int capacidad){
 
 int elimina_sala(){
 	if (asientos == NULL || CAPACIDAD_MAXIMA <= 0){
-		return -1;
+	  return -1;
 	}
 	free(asientos);
 	CAPACIDAD_MAXIMA = -1;
@@ -146,3 +146,4 @@ int elimina_sala(){
 	asientos_ocupados_variable = -1;
 	return 0;
 }
+
