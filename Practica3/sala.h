@@ -72,4 +72,4 @@ int guarda_estadoparcial_sala(const char* ruta_fichero,	size_t num_asientos, int
 // Devuelve:
 //
 //
-int recupera_estadoparcial_sala(const char+ ruta_fichero, size_t num_asientos, int* id_asientos);
+int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos);
