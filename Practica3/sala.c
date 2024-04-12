@@ -147,3 +147,22 @@ int elimina_sala(){
 	return 0;
 }
 
+
+int guarda_estado_sala(const char* ruta_fichero){
+  return 0;
+}
+
+
+int recupera_estado_sala(const char* ruta_fichero){
+  return 0;
+}
+
+
+int guarda_estadoparcial_sala(const char* ruta_fichero,	size_t num_asientos, int* id_asientos){
+  return 0;
+}
+
+
+int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos){
+  return 0;
+}
