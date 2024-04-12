@@ -3,6 +3,11 @@
 #include <unistd.h>
 #include <string.h>
 #include "sala.h"
+#include <fcntl.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 int *asientos;
 int CAPACIDAD_MAXIMA = -1;
