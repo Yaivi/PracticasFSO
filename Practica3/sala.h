@@ -47,16 +47,29 @@ int crea_sala (int capacidad);
 int elimina_sala();
 
 
+// Método que guarda el estado de la sala
+// Devuelve:
 //
-int guarda_estado_sala(const	char*	ruta_fichero);
-
-
 //
-int recupera_estado_sala(const	char*	ruta_fichero);
+int guarda_estado_sala(const char* ruta_fichero);
 
 
+// Método que lee el estado de la sala y la sobre-escribe en memoria
+// Devuelve:
 //
-int guarda_estadoparcial_sala(const char*	ruta_fichero,	size_t num_asientos,	int*	id_asientos);
-
 //
-int	recupera_estadoparcial_sala(const	char*	ruta_fichero, size_t num_asientos, int*	id_asientos);
+int recupera_estado_sala(const char* ruta_fichero);
+
+
+// Método que lee de forma parcial el estado de la sala
+// Devuelve:
+//
+//
+int guarda_estadoparcial_sala(const char* ruta_fichero,	size_t num_asientos, int* id_asientos);
+
+
+// Método que guarda de forma parcial el estado de la sala
+// Devuelve:
+//
+//
+int recupera_estadoparcial_sala(const char+ ruta_fichero, size_t num_asientos, int* id_asientos);
