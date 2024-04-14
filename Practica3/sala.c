@@ -187,17 +187,33 @@ int CrearArchivo(char *nombre) {
 
 
 void LeerEstado(int fd) {
+    int asientos[MAX];
     int contenido;
     contenido = read(fd, asientos, sizeof(int)*MAX);
     if (contenido == -1) {
         fprintf(stderr, "Error %d al leer el archivo: \n", errno);
         exit(-1);
     }
-
+    int num_asientos_leidos = bytes_leidos / sizeof(int);
+    
+    printf("Asientos leídos desde el archivo:\n");
+    for (int i = 0; i < num_asientos_leidos; i++) {
+        printf("%d ", asientos[i]);
+    }
+    printf("\n");
+    
 }
 
 void GuardarEstado(int fd) {
-    
+    ssize_t bytes_escritos;
+
+    bytes_escritos = write(fd, asientos, sizeof(int) * num_asientos);
+    if (bytes_escritos == -1) {
+        fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Estado guardado en el archivo correctamente.\n");      
 }
 
 void MostrarAtributos(int fd) {
