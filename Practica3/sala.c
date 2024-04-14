@@ -13,6 +13,7 @@ int *asientos;
 int CAPACIDAD_MAXIMA = -1;
 int asientos_libres_variable = -1;
 int asientos_ocupados_variable = -1;
+#define MAX 1000
 
 
 int comprueba_id_persona(int id_persona){
