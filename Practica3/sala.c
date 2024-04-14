@@ -152,6 +152,70 @@ int elimina_sala(){
 	return 0;
 }
 
+int AbrirArchivo(char *nombre) {
+    int archivo_abierto;
+
+    archivo_abierto = open(nombre, O_RDONLY);
+    if (archivo_abierto == -1) {
+        fprintf(stderr, "Error %d al abrir el archivo: \n", errno);
+        exit(-1);
+    }
+    
+    return archivo_abierto;
+}
+
+void CerrarArchivo(int fd) {
+    if (fd == -1) {
+        fprintf(stderr, "El archivo no se encuentra abierto.\n");
+    } else {
+        close(fd);
+    }
+
+}
+
+int CrearArchivo(char *nombre) {
+    int fd;
+
+    fd = open(nombre, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+    if (fd == -1) {
+        fprintf(stderr, "Error al crear el archivo\n");
+        exit(EXIT_FAILURE);
+    }
+        
+    return fd;    
+}
+
+
+void LeerEstado(int fd) {
+    int contenido;
+    contenido = read(fd, asientos, sizeof(int)*MAX);
+    if (contenido == -1) {
+        fprintf(stderr, "Error %d al leer el archivo: \n", errno);
+        exit(-1);
+    }
+
+}
+
+void GuardarEstado(int fd) {
+    
+}
+
+void MostrarAtributos(int fd) {
+    struct stat estado;
+	
+    if (fstat(  fd, &estado) == -1) {
+        fprintf(stderr, "Error al acceder al estado del archivo\n");
+        exit(-1);
+    }
+    if (S_ISREG(estado.st_mode)) {
+        printf("Fichero regular\n");
+    }
+    printf("El identificador del propietario %d \n", estado.st_uid);
+    printf("El identificador del grupo %d \n", estado.st_gid);
+    printf("El archivo tiene un tamaño de %ld bytes \n", estado.st_size);
+    printf("El archivo tiene un tamaño de bloque de %ld \n",estado.st_blocks);
+    CerrarArchivo(fd);
+}
 
 int guarda_estado_sala(const char* ruta_fichero){
     return 0;
