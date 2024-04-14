@@ -235,6 +235,15 @@ void MostrarAtributos(int fd) {
 }
 
 int guarda_estado_sala(const char* ruta_fichero){
+    int fd;
+    ssize_t bytes_escritos;
+    
+    fd = open(ruta_fichero, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+    
+    bytes_escritos = write(fd, asientos, sizeof(int)*CAPACIDAD_MAXIMA);
+    if (bytes_escritos == -1) {
+        fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
+        exit(EXIT_FAILURE);
     return 0;
 }
 
@@ -245,6 +254,15 @@ int recupera_estado_sala(const char* ruta_fichero){
 
 
 int guarda_estadoparcial_sala(const char* ruta_fichero,	size_t num_asientos, int* id_asientos){
+    int fd;
+    ssize_t bytes_escritos;
+    
+    fd = open(ruta_fichero, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+    
+    bytes_escritos = write(fd, asientos, sizeof(int)*CAPACIDAD_MAXIMA);
+    if (bytes_escritos == -1) {
+        fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
+        exit(EXIT_FAILURE);
     return 0;
 }
 
