@@ -14,7 +14,7 @@ int CAPACIDAD_MAXIMA = -1;
 int asientos_libres_variable = -1;
 int asientos_ocupados_variable = -1;
 #define MAX 1000
-
+int num_asientos = 0;
 
 int comprueba_id_persona(int id_persona){
 	if (id_persona <= 0){
@@ -195,7 +195,7 @@ void LeerEstado(int fd) {
         fprintf(stderr, "Error %d al leer el archivo: \n", errno);
         exit(-1);
     }
-    int num_asientos_leidos = bytes_leidos / sizeof(int);
+    int num_asientos_leidos = 1 / sizeof(int); //bytes_leidos / sizeof(int);
     
     printf("Asientos leídos desde el archivo:\n");
     for (int i = 0; i < num_asientos_leidos; i++) {
@@ -237,13 +237,35 @@ void MostrarAtributos(int fd) {
 int guarda_estado_sala(const char* ruta_fichero){
     int fd;
     ssize_t bytes_escritos;
-    
+    off_t offset = 0;
     fd = open(ruta_fichero, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
-    
-    bytes_escritos = write(fd, asientos, sizeof(int)*CAPACIDAD_MAXIMA);
+
+    // Guardar en el fichero CAPACIDAD_MAXIMA
+    offset = sizeof(int)*CAPACIDAD_MAXIMA;
+    off_t nuevo_offset = lseek(fd, offset, SEEK_SET);
+    if (nuevo_offset == -1){
+      perror("Ha sucedido un error al guardar el estado de la sala");
+      exit(-1);
+    }
+    bytes_escritos = write(fd, &CAPACIDAD_MAXIMA, sizeof(int));
     if (bytes_escritos == -1) {
         fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
-        exit(EXIT_FAILURE);
+        exit(-1);
+    }
+    
+    // Guardar en el fichero asientos_libres_variable
+    offset += sizeof(int);
+    nuevo_offset = lseek(fd, offset, SEEK_SET);
+    if (nuevo_offset == -1){
+      perror("Ha sucedido un error al guardar el estado de la sala");
+      exit(-1);
+    }
+    bytes_escritos = write(fd, &asientos_libres_variable, sizeof(int));
+    if (bytes_escritos == -1) {
+        fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
+        exit(-1);
+    }    
+    
     return 0;
 }
 
@@ -264,8 +286,8 @@ int guarda_estadoparcial_sala(const char* ruta_fichero,	size_t num_asientos, int
         fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
         exit(EXIT_FAILURE);
     return 0;
+  }
 }
-
 
 int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos){
     return 0;
