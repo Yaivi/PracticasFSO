@@ -49,27 +49,27 @@ int elimina_sala();
 
 // Método que guarda el estado de la sala
 // Devuelve:
-//
-//
+//   0 si ha funcionado correctamente
+//   -1 si ha habido algún error
 int guarda_estado_sala(const char* ruta_fichero);
 
 
 // Método que lee el estado de la sala y la sobre-escribe en memoria
 // Devuelve:
-//
-//
+//   0 si ha funcionado correctamente
+//   -1 si ha habido algún error
 int recupera_estado_sala(const char* ruta_fichero);
 
 
 // Método que lee de forma parcial el estado de la sala
 // Devuelve:
-//
-//
+//   0 si ha funcionado correctamente
+//   -1 si ha habido algún error
 int guarda_estadoparcial_sala(const char* ruta_fichero,	size_t num_asientos, int* id_asientos);
 
 
 // Método que guarda de forma parcial el estado de la sala
 // Devuelve:
-//
-//
+//   0 si ha funcionado correctamente
+//   -1 si ha habido algún error
 int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos);
