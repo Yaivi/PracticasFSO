@@ -253,7 +253,7 @@ int guarda_estado_sala(const char* ruta_fichero){
         exit(-1);
     }
     
-    // Guardar en el fichero asientos_libres_variable
+    // Guardar en el fichero asientos_ocupados_variable
     offset += sizeof(int);
     nuevo_offset = lseek(fd, offset, SEEK_SET);
     if (nuevo_offset == -1){
@@ -265,7 +265,20 @@ int guarda_estado_sala(const char* ruta_fichero){
         fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
         exit(-1);
     }    
-    
+
+    // Guardar en el fichero asientos_libres_variable
+    offset += sizeof(int);
+    nuevo_offset = lseek(fd, offset, SEEK_SET);
+    if (nuevo_offset == -1){
+      perror("Ha sucedido un error al guardar el estado de la sala");
+      exit(-1);
+    }
+    bytes_escritos = write(fd, &asientos_ocupados_variable, sizeof(int));
+    if (bytes_escritos == -1) {
+        fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
+        exit(-1);
+    }  
+	
     return 0;
 }
 
