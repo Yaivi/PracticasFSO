@@ -1,7 +1,7 @@
 ----------FUNCIONES A IMPLEMENTAR-------
-- int guarda_estado_sala(const	char*	ruta_fichero);
+- int guarda_estado_sala(const	char*	ruta_fichero); CASI ACABADO
 
-- int recupera_estado_sala(const	char*	ruta_fichero);
+- int recupera_estado_sala(const	char*	ruta_fichero); CASI ACABADO
 
 - int	guarda_estadoparcial_sala(const char*	ruta_fichero,	size_t	num_asientos,	int*	id_asientos);
 
