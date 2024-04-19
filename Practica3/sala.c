@@ -234,9 +234,9 @@ void MostrarAtributos(int fd) {
     CerrarArchivo(fd);
 }
 
-int coger_tamaño_bloque(int fd) {
+int coger_tamaño_bloque(const char* ruta_fichero) {
     struct stat estado;
-    if (fstat(fd, &estado) == -1) {
+    if (fstat(ruta_fichero, &estado) == -1) {
         fprintf(stderr, "Error al acceder al estado del archivo\n");
         exit(-1);
     }
