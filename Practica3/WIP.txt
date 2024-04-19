@@ -11,3 +11,5 @@
 -------------POR HACER-------------
 - Pruebas
 - Revisar que todo este aprueba de errores
+- Las lecturas y escrituras se hacen SIEMPRE por tamaño del bloque del archivo
+
