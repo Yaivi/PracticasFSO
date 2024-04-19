@@ -153,86 +153,6 @@ int elimina_sala(){
 	return 0;
 }
 
-int AbrirArchivo(char *nombre) {
-    int archivo_abierto;
-
-    archivo_abierto = open(nombre, O_RDONLY);
-    if (archivo_abierto == -1) {
-        fprintf(stderr, "Error %d al abrir el archivo: \n", errno);
-        exit(-1);
-    }
-    
-    return archivo_abierto;
-}
-
-void CerrarArchivo(int fd) {
-    if (fd == -1) {
-        fprintf(stderr, "El archivo no se encuentra abierto.\n");
-    } else {
-        close(fd);
-    }
-
-}
-
-int CrearArchivo(char *nombre) {
-    int fd;
-
-    fd = open(nombre, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
-    if (fd == -1) {
-        fprintf(stderr, "Error al crear el archivo\n");
-        exit(EXIT_FAILURE);
-    }
-        
-    return fd;    
-}
-
-
-void LeerEstado(int fd) {
-    int asientos[MAX];
-    int contenido;
-    contenido = read(fd, asientos, sizeof(int)*MAX);
-    if (contenido == -1) {
-        fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-        exit(-1);
-    }
-    int num_asientos_leidos = 1 / sizeof(int); //bytes_leidos / sizeof(int);
-    
-    printf("Asientos leídos desde el archivo:\n");
-    for (int i = 0; i < num_asientos_leidos; i++) {
-        printf("%d ", asientos[i]);
-    }
-    printf("\n");
-    
-}
-
-void GuardarEstado(int fd) {
-    ssize_t bytes_escritos;
-
-    bytes_escritos = write(fd, asientos, sizeof(int) * num_asientos);
-    if (bytes_escritos == -1) {
-        fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
-        exit(EXIT_FAILURE);
-    }
-
-    printf("Estado guardado en el archivo correctamente.\n");      
-}
-
-void MostrarAtributos(int fd) {
-    struct stat estado;
-	
-    if (fstat(  fd, &estado) == -1) {
-        fprintf(stderr, "Error al acceder al estado del archivo\n");
-        exit(-1);
-    }
-    if (S_ISREG(estado.st_mode)) {
-        printf("Fichero regular\n");
-    }
-    printf("El identificador del propietario %d \n", estado.st_uid);
-    printf("El identificador del grupo %d \n", estado.st_gid);
-    printf("El archivo tiene un tamaño de %ld bytes \n", estado.st_size);
-    printf("El archivo tiene un tamaño de bloque de %ld \n",estado.st_blocks);
-    CerrarArchivo(fd);
-}
 
 int coger_tamaño_bloque(const char* ruta_fichero) {
     struct stat estado;
@@ -254,22 +174,24 @@ int guarda_estado_sala(const char* ruta_fichero){
         fprintf(stderr, "Error al crear el archivo\n");
         exit(EXIT_FAILURE);
     }
+    int tam_bloque  = coger_tamaño_bloque(ruta_fichero);
+    
     // Guardar en el fichero CAPACIDAD_MAXIMA
-    bytes_escritos = write(fd, &CAPACIDAD_MAXIMA, sizeof(int));
+    bytes_escritos = write(fd, &CAPACIDAD_MAXIMA, tam_bloque);
     if (bytes_escritos == -1) {
         fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
         exit(-1);
     }
     
     // Guardar en el fichero asientos_ocupados_variable
-    bytes_escritos = write(fd, &asientos_libres_variable, sizeof(int));
+    bytes_escritos = write(fd, &asientos_libres_variable, tam_bloque);
     if (bytes_escritos == -1) {
         fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
         exit(-1);
     }    
 
     // Guardar en el fichero asientos_libres_variable
-    bytes_escritos = write(fd, &asientos_ocupados_variable, sizeof(int));
+    bytes_escritos = write(fd, &asientos_ocupados_variable, tam_bloque);
     if (bytes_escritos == -1) {
         fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
         exit(-1);
