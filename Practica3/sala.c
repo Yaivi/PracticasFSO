@@ -242,17 +242,11 @@ int guarda_estado_sala(const char* ruta_fichero){
     }
     int fd = open(ruta_fichero, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
     ssize_t bytes_escritos;
-    off_t offset = 0;
     if (fd == -1) {
         fprintf(stderr, "Error al crear el archivo\n");
         exit(EXIT_FAILURE);
     }
     // Guardar en el fichero CAPACIDAD_MAXIMA
-    off_t nuevo_offset = lseek(fd, offset, SEEK_SET);
-    if (nuevo_offset == -1){
-      perror("Ha sucedido un error al guardar el estado de la sala: capacidad máxima");
-      exit(-1);
-    }
     bytes_escritos = write(fd, &CAPACIDAD_MAXIMA, sizeof(int));
     if (bytes_escritos == -1) {
         fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
@@ -260,12 +254,6 @@ int guarda_estado_sala(const char* ruta_fichero){
     }
     
     // Guardar en el fichero asientos_ocupados_variable
-    offset += sizeof(int);
-    nuevo_offset = lseek(fd, offset, SEEK_SET);
-    if (nuevo_offset == -1){
-      perror("Ha sucedido un error al guardar el estado de la sala");
-      exit(-1);
-    }
     bytes_escritos = write(fd, &asientos_libres_variable, sizeof(int));
     if (bytes_escritos == -1) {
         fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
@@ -273,12 +261,6 @@ int guarda_estado_sala(const char* ruta_fichero){
     }    
 
     // Guardar en el fichero asientos_libres_variable
-    offset += sizeof(int);
-    nuevo_offset = lseek(fd, offset, SEEK_SET);
-    if (nuevo_offset == -1){
-      perror("Ha sucedido un error al guardar el estado de la sala");
-      exit(-1);
-    }
     bytes_escritos = write(fd, &asientos_ocupados_variable, sizeof(int));
     if (bytes_escritos == -1) {
         fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
@@ -286,12 +268,6 @@ int guarda_estado_sala(const char* ruta_fichero){
     }
 
     // Guardar en el fichero el vector asientos
-    offset += sizeof(int);
-    nuevo_offset = lseek(fd, offset, SEEK_SET);
-    if (nuevo_offset == -1){
-      perror("Ha sucedido un error al guardar el estado de la sala");
-      exit(-1);
-    }
     bytes_escritos = write(fd, asientos, sizeof(int)*CAPACIDAD_MAXIMA);
     if (bytes_escritos == -1) {
         fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
@@ -304,35 +280,21 @@ int guarda_estado_sala(const char* ruta_fichero){
 
 
 int recupera_estado_sala(const char* ruta_fichero){
+    int nueva_CAPACIDAD_MAXIMA;
     int fd = open(ruta_fichero, O_RDONLY);
     int contenido;
-    off_t offset = 0;
-    off_t nuevo_offset = lseek(fd, offset, SEEK_SET);
     
-    if (nuevo_offset == -1){
-      perror("Ha sucedido un error al recuperar el estado de la sala");
-      exit(-1);
-    }
-    contenido = read(fd, &CAPACIDAD_MAXIMA, sizeof(int));
+    contenido = read(fd, &nueva_CAPACIDAD_MAXIMA, sizeof(int));
     if (contenido == -1) {
       fprintf(stderr, "Error %d al leer el archivo: \n", errno);
       exit(-1);
     }
-
-    offset += sizeof(int);
-    if (nuevo_offset == -1){
-      perror("Ha sucedido un error al recuperar el estado de la sala");
+    if (nueva_CAPACIDAD_MAXIMA != CAPACIDAD_MAXIMA){
       exit(-1);
     }
     contenido = read(fd, &asientos_libres_variable, sizeof(int));
     if (contenido == -1) {
       fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
-    }
-
-    offset += sizeof(int);
-    if (nuevo_offset == -1){
-      perror("Ha sucedido un error al recuperar el estado de la sala");
       exit(-1);
     }
     contenido = read(fd, &asientos_ocupados_variable, sizeof(int));
@@ -371,7 +333,7 @@ int main(){
   guarda_estado_sala("c/Practica03/prueba.txt");
   elimina_sala();
   
-  espacio = 50;
+  espacio = 10;
   crea_sala(espacio);
   reserva_asiento(10);
   reserva_asiento(20);
