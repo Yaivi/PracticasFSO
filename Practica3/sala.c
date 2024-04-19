@@ -156,7 +156,7 @@ int elimina_sala(){
 
 int coger_tamaño_bloque(const char* ruta_fichero) {
     struct stat estado;
-    if (fstat(ruta_fichero, &estado) == -1) {
+    if (stat(ruta_fichero, &estado) == -1) {
         fprintf(stderr, "Error al acceder al estado del archivo\n");
         exit(-1);
     }
