@@ -3,9 +3,9 @@
 
 - int recupera_estado_sala(const	char*	ruta_fichero); CASI ACABADO
 
-- int	guarda_estadoparcial_sala(const char*	ruta_fichero,	size_t	num_asientos,	int*	id_asientos);
+- int	guarda_estadoparcial_sala(const char*	ruta_fichero,	size_t num_asientos,	int*	id_asientos); NO FUNCIONA CORRECTAMENTE
 
-- int	recupera_estadoparcial_sala(const	char*	ruta_fichero, size_t	num_asientos, int*	id_asientos);
+- int	recupera_estadoparcial_sala(const	char*	ruta_fichero, size_t num_asientos, int*	id_asientos);
 
 
 -------------POR HACER-------------
