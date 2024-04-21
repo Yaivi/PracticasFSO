@@ -238,18 +238,38 @@ int recupera_estado_sala(const char* ruta_fichero){
 }
 
 
-int guarda_estadoparcial_sala(const char* ruta_fichero,	size_t num_asientos, int* id_asientos){
-    int fd;
+int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos){
+    if (comprueba_sala() == -1){
+      printf("Error: no se ha creado una sala");
+      return -1;
+    }
+    int fd = open(ruta_fichero, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
     ssize_t bytes_escritos;
-    
-    fd = open(ruta_fichero, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
-    
-    bytes_escritos = write(fd, asientos, sizeof(int)*CAPACIDAD_MAXIMA);
-    if (bytes_escritos == -1) {
-        fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
+    if (fd == -1) {
+        fprintf(stderr, "Error al crear el archivo\n");
         exit(EXIT_FAILURE);
+    }
+    
+    off_t offset = 3*sizeof(int);
+    
+    for (size_t i = 0; i < num_asientos; i++){
+      off_t offset_desde_principio_array = offset + sizeof(int)*id_asientos[i];
+      printf("El asiento es el: %d\n", id_asientos[i]);
+      int id_persona_a_guardar = *(asientos + id_asientos[i] -1);
+      printf("El id de persona ha guardar es el: %d\n", *(asientos + id_asientos[i] -1));      
+
+      off_t nuevo_offset = lseek(fd, offset_desde_principio_array, SEEK_SET);
+      if (nuevo_offset == -1){
+        perror("Ha sucedido un error al guardar el estado de la sala");
+        exit(-1);
+      }
+      bytes_escritos = write(fd, &id_persona_a_guardar, sizeof(int));
+      if (bytes_escritos == -1){
+        perror("Error al guardar el estado parcial de la sala");
+      }
+    }
+    close(fd);
     return 0;
-  }
 }
 
 int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos){
