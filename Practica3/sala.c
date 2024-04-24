@@ -294,7 +294,7 @@ int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, i
     int fd = open(ruta_fichero, O_RDONLY);
     if (fd == -1) {
         fprintf(stderr, "Error al abrir el archivo\n");
-        exit(EXIT_FAILURE);
+        return -1;
     }
     int contenido;   
     int asiento_a_leer;
@@ -302,17 +302,33 @@ int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, i
     
     for (size_t i = 0; i < num_asientos; i++){
       int id_asiento_a_recuperar = id_asientos[i]-1;
-      off_t pos = offset + id_asiento_a_recuperar*sizeof(int);
-      lseek(fd, pos, SEEK_SET);
+      if (comprueba_id_asiento(id_asiento_a_recuperar) == -1){
+        return -1;
+      }
+
+      off_t nuevo_offset = offset + id_asiento_a_recuperar*sizeof(int);
+      lseek(fd, nuevo_offset, SEEK_SET);
       contenido = read(fd, &asientos[id_asientos[i]-1], sizeof(int));
       if (contenido == -1){
         perror("Error al leer el estado parcial de la sala");
-        exit(-1);
+        return -1;
         } 
     }
     close(fd);
+    
+    // Ajuste de las variables de asientos libres y ocupados
+    asientos_ocupados_variable = 0;
+    asientos_libres_variable = 0;
+    for (int i = 1; i <= CAPACIDAD_MAXIMA; i++){
+      if (*(asientos + i -1) == -1){
+        asientos_libres_variable++;
+      }
+    }
+    asientos_ocupados_variable = CAPACIDAD_MAXIMA - asientos_libres_variable;
+    
     return 0;
 }
+
 
 
 int main(){
