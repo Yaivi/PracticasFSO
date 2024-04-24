@@ -173,49 +173,57 @@ int coger_tamaño_bloque(const char* ruta_fichero) {
 }
 
 int guarda_estado_sala(const char* ruta_fichero){
+    ssize_t bytes_escritos;
     if (comprueba_sala() == -1){
       printf("Error: no se ha creado una sala");
       return -1;
     }
     int fd = open(ruta_fichero, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
-    ssize_t bytes_escritos;
+
     if (fd == -1) {
-        fprintf(stderr, "Error al crear el archivo\n");
-        exit(EXIT_FAILURE);
+        comprobar_error();
+        return -1;
     }
     int tam_bloque  = coger_tamaño_bloque(ruta_fichero);
     
     // Guardar en el fichero CAPACIDAD_MAXIMA
-    bytes_escritos = write(fd, &CAPACIDAD_MAXIMA, tam_bloque);
+    write(fd, &CAPACIDAD_MAXIMA, sizeof(int));
     if (bytes_escritos == -1) {
-        fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
-        exit(-1);
+        comprobar_error();
+        return -1;
     }
     
     // Guardar en el fichero asientos_ocupados_variable
-    bytes_escritos = write(fd, &asientos_libres_variable, tam_bloque);
+    write(fd, &asientos_libres_variable,  sizeof(int));
     if (bytes_escritos == -1) {
-        fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
-        exit(-1);
+        printf("es culpa de asientos libres");
+        comprobar_error();
+        return -1;
     }    
 
     // Guardar en el fichero asientos_libres_variable
-    bytes_escritos = write(fd, &asientos_ocupados_variable, tam_bloque);
+    write(fd, &asientos_ocupados_variable, sizeof(int));
     if (bytes_escritos == -1) {
-        fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
-        exit(-1);
+        comprobar_error();
+        return -1;
     }
 
     // Guardar en el fichero el vector asientos
-    bytes_escritos = write(fd, asientos, sizeof(int)*CAPACIDAD_MAXIMA);
-    if (bytes_escritos == -1) {
-        fprintf(stderr, "Error %d al escribir en el archivo\n", errno);
-        exit(-1);
+    for (int i = 0; i<CAPACIDAD_MAXIMA; i++) {
+      bytes_escritos = write(fd, &asientos[i], tam_bloque);
+      if (bytes_escritos == -1) {
+          comprobar_error();
+          return -1;
+      }
+      if (bytes_escritos == 0)
+        {
+            break;
+        }
     }
-
     close(fd);
     return 0;
 }
+
 
 
 int recupera_estado_sala(const char* ruta_fichero){
@@ -225,21 +233,22 @@ int recupera_estado_sala(const char* ruta_fichero){
     
     contenido = read(fd, &nueva_CAPACIDAD_MAXIMA, sizeof(int));
     if (contenido == -1) {
-      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
+        comprobar_error();
+        return -1;
     }
     if (nueva_CAPACIDAD_MAXIMA != CAPACIDAD_MAXIMA){
-      exit(-1);
+        comprobar_error();
+        return -1;
     }
     contenido = read(fd, &asientos_libres_variable, sizeof(int));
     if (contenido == -1) {
-      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
+        comprobar_error();
+        return -1;
     }
     contenido = read(fd, &asientos_ocupados_variable, sizeof(int));
     if (contenido == -1) {
-      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
+        comprobar_error();
+        return -1;
     }
 
     close(fd);
