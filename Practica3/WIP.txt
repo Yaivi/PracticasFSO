@@ -3,12 +3,13 @@
 
 - int recupera_estado_sala(const	char*	ruta_fichero); CASI ACABADO
 
-- int	guarda_estadoparcial_sala(const char*	ruta_fichero,	size_t num_asientos,	int*	id_asientos); NO FUNCIONA CORRECTAMENTE
+- int	guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int *id_asientos); NO FUNCIONA CORRECTAMENTE
 
-- int	recupera_estadoparcial_sala(const	char*	ruta_fichero, size_t num_asientos, int*	id_asientos);
+- int	recupera_estadoparcial_sala(const	char* ruta_fichero, size_t num_asientos, int* id_asientos); FALTA AÑADIR COMPROBACIONES
 
 
 -------------POR HACER-------------
+- misala.c
 - Pruebas
 - Revisar que todo este aprueba de errores
 - Las lecturas y escrituras se hacen SIEMPRE por tamaño del bloque del archivo
