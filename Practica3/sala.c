@@ -41,6 +41,15 @@ int comprueba_id_asiento(int id_asiento){
 	return 0;
 }
 
+int comprobar_error(){
+	if (errno != 0){
+		fprintf(stderr, "Se ha producido un error con código %d: %s", errno, strerror(errno));
+		fflush(stderr);
+		errno = 0;
+		return -1;
+	}
+	return 0;
+}
 
 int reserva_asiento(int id_persona){
         if (comprueba_sala() == -1){
