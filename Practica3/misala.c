@@ -18,21 +18,24 @@ int comprobar_valor_id_asiento(int opcion_usuario, int capacidad){
 }
 
 int comprobar_error_en_misala(){
-	if (errno != 0){
-		fprintf(stderr, "Se ha producido un error con código %d: %s", errno, strerror(errno));
-		fflush(stderr);
-		errno = 0;
-		return -1;
-	}
-	return 0;
+  if (errno != 0){
+    fprintf(stderr, "Se ha producido un error con código %d: %s", errno, strerror(errno));
+    fflush(stderr);
+    errno = 0;
+    return -1;
+    }
+    return 0;
 }
 
+int comprobar_capacidad_en_misala(){
+  fprintf(stderr, "Se ha pasado como parámetro una capacidad negativa o 0\n");
+  return -1;
+}
 
 
 int main(int argc, char *argv[]){
   int capacidad;
   int fd;
-  //crea_sala(capacidad); // Crea una capacidad con el valor de argv[2]
   
   char* orden_opción = argv[1];
   char* f = argv[2];
@@ -42,6 +45,9 @@ int main(int argc, char *argv[]){
     if ((fd = open(ruta, O_RDONLY)) == -1) {
       capacidad = atoi(argv[5]);
       crea_sala(capacidad);
+      if (crea_sala(capacidad) == -1){
+        return -1;
+      }
       guarda_estado_sala(ruta);
       elimina_sala();
       printf("Se ha creado el archivo con los datos pasados\n");
@@ -56,6 +62,10 @@ int main(int argc, char *argv[]){
   else if(strcmp(orden_opción, "crea") == 0 && strcmp(f,"-o") == 0){
     capacidad = atoi(argv[5]);
     crea_sala(capacidad);
+    if (crea_sala(capacidad) == -1){
+      comprobar_capacidad_en_misala();
+      return -1;
+    }
     guarda_estado_sala(ruta);
     elimina_sala();
   }
@@ -74,6 +84,10 @@ int main(int argc, char *argv[]){
         return -1;  
     }
     crea_sala(capacidad);
+    if (crea_sala(capacidad) == -1){
+      comprobar_capacidad_en_misala();
+      return -1;
+    }
     recupera_estado_sala(ruta);
     if (argc-3 > asientos_libres()) {
         fprintf(stderr, "No hay suficientes asientos libres, faltan %d asientos", argc-3-asientos_libres());
@@ -96,8 +110,8 @@ int main(int argc, char *argv[]){
     
     contenido = read(fd, &capacidad, sizeof(int));
     if (contenido == -1) {
-      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
+        comprobar_error_en_misala();
+        return -1;  
     }
     close(fd);
     crea_sala(capacidad);
@@ -107,7 +121,8 @@ int main(int argc, char *argv[]){
     int asientos_resultantes_a_anular = 0;
     int *asientos_a_anular = (int*)malloc(num_asientos_pasados * sizeof(int));
     if (asientos_a_anular == NULL){
-      return -1;
+        comprobar_error_en_misala();
+        return -1;
     }
     int *asientos_a_fuera_rango_vector = (int*)malloc(num_asientos_pasados * sizeof(int));
     int index = 0;
@@ -145,8 +160,8 @@ int main(int argc, char *argv[]){
     
     contenido = read(fd, &capacidad, sizeof(int));
     if (contenido == -1) {
-      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
+        comprobar_error_en_misala();
+        return -1;  
     }
     close(fd);
     crea_sala(capacidad);
