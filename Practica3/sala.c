@@ -225,7 +225,52 @@ int guarda_estado_sala(const char* ruta_fichero){
 }
 
 
+int recupera_estado_sala(const char* ruta_fichero){
+    int nueva_CAPACIDAD_MAXIMA;
+    int fd = open(ruta_fichero, O_RDONLY);
+    int contenido;
+    
+    contenido = read(fd, &nueva_CAPACIDAD_MAXIMA, sizeof(int));
+    if (contenido == -1) {
+      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
+      exit(-1);
+    }
+    if (nueva_CAPACIDAD_MAXIMA != CAPACIDAD_MAXIMA){
+      exit(-1);
+    }
+    contenido = read(fd, &asientos_libres_variable, sizeof(int));
+    if (contenido == -1) {
+      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
+      exit(-1);
+    }
+    contenido = read(fd, &asientos_ocupados_variable, sizeof(int));
+    if (contenido == -1) {
+      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
+      exit(-1);
+    }
+    contenido = read(fd, asientos, sizeof(int)*CAPACIDAD_MAXIMA);
+    if (contenido == -1) {
+      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
+      exit(-1);
+    }
+    
+    close(fd);
+    
+    // Ajuste de las variables de asientos libres y ocupados
+    asientos_ocupados_variable = 0;
+    asientos_libres_variable = 0;
+    for (int i = 1; i <= CAPACIDAD_MAXIMA; i++){
+      if (*(asientos + i -1) == -1){
+        asientos_libres_variable++;
+      }
+    }
+    asientos_ocupados_variable = CAPACIDAD_MAXIMA - asientos_libres_variable;
+    
+    return 0;
+}
 
+
+/**
 int recupera_estado_sala(const char* ruta_fichero){
     int nueva_CAPACIDAD_MAXIMA;
     int fd = open(ruta_fichero, O_RDONLY);
@@ -254,7 +299,7 @@ int recupera_estado_sala(const char* ruta_fichero){
     close(fd);
     return 0;
 }
-
+**/
 
 int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos){
     if (comprueba_sala() == -1){
@@ -330,7 +375,7 @@ int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, i
 }
 
 
-
+/**
 int main(){
   int espacio = 10;
   crea_sala(espacio);
@@ -358,3 +403,4 @@ int main(){
   printf("Asientos Ocupados: %d \n",asientos_ocupados()); 
   return 0; 
 }
+**/
