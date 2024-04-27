@@ -23,6 +23,7 @@ int comprueba_id_persona(int id_persona){
 	return 0;
 }
 
+
 int comprueba_sala(){
 	if (asientos_libres < 0){
 		return -1;
@@ -34,12 +35,13 @@ int comprueba_id_asiento(int id_asiento){
 	if (id_asiento < 0){
 		return -1;
 	}
-
-        if (id_asiento > CAPACIDAD_MAXIMA){
+  
+  if (id_asiento > CAPACIDAD_MAXIMA){
 		return -1;
 	}
 	return 0;
 }
+
 
 int comprobar_error(){
 	if (errno != 0){
@@ -50,6 +52,7 @@ int comprobar_error(){
 	}
 	return 0;
 }
+
 
 int reserva_asiento(int id_persona){
         if (comprueba_sala() == -1){
@@ -172,6 +175,7 @@ int coger_tamaño_bloque(const char* ruta_fichero) {
     return estado.st_blksize;
 }
 
+
 int guarda_estado_sala(const char* ruta_fichero){
     ssize_t bytes_escritos;
     if (comprueba_sala() == -1){
@@ -281,37 +285,6 @@ int recupera_estado_sala(const char* ruta_fichero){
 }
 
 
-/**
-int recupera_estado_sala(const char* ruta_fichero){
-    int nueva_CAPACIDAD_MAXIMA;
-    int fd = open(ruta_fichero, O_RDONLY);
-    int contenido;
-    
-    contenido = read(fd, &nueva_CAPACIDAD_MAXIMA, sizeof(int));
-    if (contenido == -1) {
-        comprobar_error();
-        return -1;
-    }
-    if (nueva_CAPACIDAD_MAXIMA != CAPACIDAD_MAXIMA){
-        comprobar_error();
-        return -1;
-    }
-    contenido = read(fd, &asientos_libres_variable, sizeof(int));
-    if (contenido == -1) {
-        comprobar_error();
-        return -1;
-    }
-    contenido = read(fd, &asientos_ocupados_variable, sizeof(int));
-    if (contenido == -1) {
-        comprobar_error();
-        return -1;
-    }
-
-    close(fd);
-    return 0;
-}
-**/
-
 int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos){
     if (comprueba_sala() == -1){
       printf("Error: no se ha creado una sala");
@@ -385,33 +358,3 @@ int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, i
     return 0;
 }
 
-
-/**
-int main(){
-  int espacio = 10;
-  crea_sala(espacio);
-  guarda_estado_sala("Documentos/Practica3/prueba.txt");
-  elimina_sala();
-  
-  espacio = 10;
-  crea_sala(espacio);
-  reserva_asiento(10);
-  reserva_asiento(20);
-  reserva_asiento(30);
-  reserva_asiento(40);
-  guarda_estado_sala("Documentos/Practica3/prueba.txt");
-  elimina_sala();
-
-  printf("Capacidad Máxima: %d \n",capacidad_sala()); 
-  printf("Asientos Libres: %d \n",asientos_libres());
-  printf("Asientos Ocupados: %d \n",asientos_ocupados());
-  
-  espacio = 10;
-  crea_sala(espacio);  
-  recupera_estado_sala("Documentos/Practica3/prueba.txt");
-  printf("Capacidad Máxima: %d \n",capacidad_sala()); 
-  printf("Asientos Libres: %d \n",asientos_libres());
-  printf("Asientos Ocupados: %d \n",asientos_ocupados()); 
-  return 0; 
-}
-**/
