@@ -10,20 +10,12 @@
 #include "sala.h"
 
 
-int leer_valor_usuario(char *input_usuario){
-  int opcion_usuario;
-  fgets(input_usuario, sizeof(input_usuario), stdin);
-  opcion_usuario = atoi(input_usuario);
-  return opcion_usuario;
-}
-
-int comprobar_valor(int opcion_usuario){
-  if (opcion_usuario <= 0){
+int comprobar_valor_id_asiento(int opcion_usuario, int capacidad){
+  if (opcion_usuario <= 0 || opcion_usuario > capacidad){
     return -1;
   }
     return 0;
 }
-
 
 int main(int argc, char *argv[]){
   int capacidad;
