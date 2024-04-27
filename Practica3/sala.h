@@ -61,14 +61,14 @@ int guarda_estado_sala(const char* ruta_fichero);
 int recupera_estado_sala(const char* ruta_fichero);
 
 
-// Método que lee de forma parcial el estado de la sala
+// Método que guarda de forma parcial el estado de la sala
 // Devuelve:
 //   0 si ha funcionado correctamente
 //   -1 si ha habido algún error
 int guarda_estadoparcial_sala(const char* ruta_fichero,	size_t num_asientos, int* id_asientos);
 
 
-// Método que guarda de forma parcial el estado de la sala
+// Método que lee de forma parcial el estado de la sala
 // Devuelve:
 //   0 si ha funcionado correctamente
 //   -1 si ha habido algún error
