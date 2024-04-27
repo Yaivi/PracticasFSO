@@ -17,6 +17,13 @@ int comprobar_valor_id_asiento(int opcion_usuario, int capacidad){
     return 0;
 }
 
+int comprobar_valor_id_persona(int opcion_usuario, int capacidad){
+  if (opcion_usuario <= 0 || opcion_usuario > capacidad){
+    return -1;
+  }
+    return 0;
+}
+
 int comprobar_error_en_misala(){
   if (errno != 0){
     fprintf(stderr, "Se ha producido un error con código %d: %s", errno, strerror(errno));
@@ -72,6 +79,7 @@ int main(int argc, char *argv[]){
 
 	  
   else if (strcmp(orden_opción, "reserva") == 0 && strcmp(f,"-f") == 0){
+    int contador_valor_negativo = 0;
     int fd = open(ruta, O_RDWR);
     int contenido;
     if (fd == -1) {
@@ -97,10 +105,21 @@ int main(int argc, char *argv[]){
     }
     for (int i = 4; i<argc; i++) {
         reserva_asiento(atoi(argv[i]));
+        if (comprobar_valor_id_persona(atoi(argv[i]), capacidad) == -1){
+          contador_valor_negativo++;
+        }
     }
     guarda_estado_sala(ruta);
     elimina_sala();
-    printf("Reserva completa\n");
+    if (contador_valor_negativo > 0 && contador_valor_negativo < argc-4){
+      printf("Reserva completa pero con fallos\n");
+    }
+    if (contador_valor_negativo == argc-4){
+      printf("Reserva no completada\n");
+    }
+    if (contador_valor_negativo == 0){
+      printf("Reserva completada\n");
+    }
   }   
 
 	  
@@ -181,4 +200,3 @@ int main(int argc, char *argv[]){
   }
   return 0;
 }
-
