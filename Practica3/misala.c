@@ -17,6 +17,18 @@ int comprobar_valor_id_asiento(int opcion_usuario, int capacidad){
     return 0;
 }
 
+int comprobar_error_en_misala(){
+	if (errno != 0){
+		fprintf(stderr, "Se ha producido un error con código %d: %s", errno, strerror(errno));
+		fflush(stderr);
+		errno = 0;
+		return -1;
+	}
+	return 0;
+}
+
+
+
 int main(int argc, char *argv[]){
   int capacidad;
   int fd;
@@ -25,10 +37,6 @@ int main(int argc, char *argv[]){
   char* orden_opción = argv[1];
   char* f = argv[2];
   char* ruta = argv[3];
-
-  for (int i = 0; i<argc; i++){
-    printf("PARAM %d %s\n", i, argv[i]);
-  }
   
   if(strcmp(orden_opción, "crea") == 0 && strcmp(f,"-f") == 0){
     if ((fd = open(ruta, O_RDONLY)) == -1) {
@@ -57,12 +65,12 @@ int main(int argc, char *argv[]){
     int fd = open(ruta, O_RDWR);
     int contenido;
     if (fd == -1) {
-        comprobar_error();
+        comprobar_error_en_misala();
         return -1;    
     }
     contenido = read(fd, &capacidad, sizeof(int));
     if (contenido == -1) {
-        comprobar_error();
+        comprobar_error_en_misala();
         return -1;  
     }
     crea_sala(capacidad);
@@ -157,99 +165,5 @@ int main(int argc, char *argv[]){
     fprintf(stderr, "Orden no válida\n");
   }
   return 0;
-}  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  /**
-  printf("---Bienvenido a la sala en %s---\n", argv[1]);
-  while (1){
-	  printf("\nEscriba el número de la instrucción: \n");
-	  printf("1. Reserva asiento (reserva <id-persona>).\n");
-	  printf("2. Liberar asiento (libera <id-asiento>).\n");
-	  printf("3. Estado del asiento (estado_asiento <id-asiento>).\n");
-	  printf("4. Mirar el número de asientos libres.\n");
-	  printf("5. Mirar el número de asientos ocupados.\n");
-	  printf("6. Mirar la capacidad de la sala.\n");
-	  printf("7. Cerrar y eliminar sala (cerrar_sala).\n");
-	  
-	  fgets(input_usuario, sizeof(input_usuario), stdin); // Pide al usuario por pantalla que escriba la orden deseada
-	  sscanf(input_usuario, "%d", &opcion_usuario); // Convierte lo escrito por el usuario a int
-	  
-	  switch (opcion_usuario){
-	  	case 1:
-	  		opcion_usuario = 0;
-	  		printf("Ha seleccionado reservar asiento.\n");
-	  		printf("Escriba el id de la persona que va a reservar el asiento.\n");
-                        opcion_usuario = leer_valor_usuario(input_usuario);
-	  		if (comprobar_valor(opcion_usuario) == -1){
-	  		  printf("Valor introducido no válido.\n");
-	  		  break;
-	  		}
-	  		int asiento_reservado = reserva_asiento(opcion_usuario);
-	  		printf("El asiento reservado es el número %d.\n", asiento_reservado);
-	  		break;
-	  	case 2:
-	  		opcion_usuario = 0;	  	
-	  		printf("Ha seleccionado liberar asiento.\n");
-	  		printf("Escriba el id del asiento a liberar.\n");
-                        opcion_usuario = leer_valor_usuario(input_usuario);
-	  		if (comprobar_valor(opcion_usuario) == -1){
-	  		  printf("Valor introducido no válido.\n");
-	  		  break;
-	  		}
-	  		int asiento_liberado = libera_asiento(opcion_usuario);
-	  		printf("Se ha liberado el asiento número %d, que pertenecía a la persona %d.", opcion_usuario, asiento_liberado);
-	  		break;
-	  	case 3:
-                        opcion_usuario = 0;
-	  		printf("Ha seleccionado mirar estado de un asiento.\n");
-	  		printf("Escriba el asiento para mirar su estado.\n");
-                        opcion_usuario = leer_valor_usuario(input_usuario);
-	  		if (comprobar_valor(opcion_usuario) == -1){
-	  		  printf("Valor introducido no válido.\n");
-	  		  break;
-	  		}
-			printf("El estado del asiento número %d es %d.\n", opcion_usuario, estado_asiento(opcion_usuario));
-	  		break;	  	
-		case 4:
-                        opcion_usuario = 0;
-	  		printf("Ha seleccionado mirar el número de asientos libres.\n");
-			printf("Hay %d asientos libres actualmente. \n", asientos_libres());
-	  		break;		  
-		case 5:
-                        opcion_usuario = 0;
-	  		printf("Ha seleccionado mirar el número de asientos ocupados.\n");
-			printf("Hay %d asientos ocupados.\n", asientos_ocupados());
-	  		break;		
-		case 6:
-                        opcion_usuario = 0;
-	  		printf("Ha seleccionado mirar la capacidad de la sala.\n");
-			printf("Hay %d asientos en la sala.\n", capacidad_sala());
-	  		break;		  
-		case 7:
-	  		opcion_usuario = 0;	  	
-	  		printf("Ha seleccionado cerrar y eliminar sala.\n");
-	  		elimina_sala();
-	  		sleep(5); // Tiempo en s de espera antes de cerrar.
-			exit(0);
-	  		break;	  	
-	  	default:
-	  		printf("Opción inválida. Escriba un número válido.\n");
-	  		break;
-  	}
-  }
-  return 0;
 }
-**/
+
