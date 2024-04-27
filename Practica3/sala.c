@@ -35,8 +35,7 @@ int comprueba_id_asiento(int id_asiento){
 	if (id_asiento < 0){
 		return -1;
 	}
-  
-  if (id_asiento > CAPACIDAD_MAXIMA){
+	if (id_asiento > CAPACIDAD_MAXIMA){
 		return -1;
 	}
 	return 0;
@@ -357,4 +356,3 @@ int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, i
     
     return 0;
 }
-
