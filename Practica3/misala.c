@@ -29,14 +29,56 @@ int main(int argc, char *argv[]){
     printf("PARAM %d %s\n", i, argv[i]);
   }
   
-  if(strcmp(orden_opción, "crea") == 0){
+  if(strcmp(orden_opción, "crea") == 0 && strcmp(f,"-f") == 0){
+    if ((fd = open(ruta, O_RDONLY)) == -1) {
+      capacidad = atoi(argv[5]);
+      crea_sala(capacidad);
+      guarda_estado_sala(ruta);
+      elimina_sala();
+      printf("Se ha creado el archivo con los datos pasados\n");
+    } else {
+      fprintf(stderr, "Este archivo ya existe, para sobreescribirlo ponga -o en vez de -f\n");
+      fflush(stderr);
+      errno = 0;
+      return -1; 
+    }
+  }
+  
+  else if(strcmp(orden_opción, "crea") == 0 && strcmp(f,"-o") == 0){
     capacidad = atoi(argv[5]);
+    crea_sala(capacidad);
+    guarda_estado_sala(ruta);
+    elimina_sala();
   }
 
 	  
   else if (strcmp(orden_opción, "reserva") == 0 && strcmp(f,"-f") == 0){
-    
-  }  
+    int fd = open(ruta, O_RDWR);
+    int contenido;
+    if (fd == -1) {
+        comprobar_error();
+        return -1;    
+    }
+    contenido = read(fd, &capacidad, sizeof(int));
+    if (contenido == -1) {
+        comprobar_error();
+        return -1;  
+    }
+    crea_sala(capacidad);
+    recupera_estado_sala(ruta);
+    if (argc-3 > asientos_libres()) {
+        fprintf(stderr, "No hay suficientes asientos libres, faltan %d asientos", argc-3-asientos_libres());
+        fflush(stderr);
+        errno = 0;
+        return -1;
+    }
+    for (int i = 4; i<argc; i++) {
+        reserva_asiento(atoi(argv[i]));
+    }
+    guarda_estado_sala(ruta);
+    elimina_sala();
+    printf("Reserva completa\n");
+  }   
 
 	  
   else if(strcmp(orden_opción, "anula") == 0 && strcmp(f,"-f") == 0 && strcmp(argv[4], "-asientos") == 0){
