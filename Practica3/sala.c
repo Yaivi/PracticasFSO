@@ -248,10 +248,16 @@ int recupera_estado_sala(const char* ruta_fichero){
       fprintf(stderr, "Error %d al leer el archivo: \n", errno);
       exit(-1);
     }
-    contenido = read(fd, asientos, sizeof(int)*CAPACIDAD_MAXIMA);
-    if (contenido == -1) {
-      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
+    int tam_bloque = coger_tamaño_bloque(ruta_fichero);
+    for (int i = 0; i < CAPACIDAD_MAXIMA; i++) {
+        contenido = read(fd, &asientos[i], tam_bloque);
+        if (contenido == -1) {
+            fprintf(stderr, "Error %d al leer el archivo: \n", errno);
+            exit(-1);
+        }
+        if (contenido == 0) {
+            break;
+        }
     }
     
     close(fd);
@@ -379,7 +385,7 @@ int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, i
 int main(){
   int espacio = 10;
   crea_sala(espacio);
-  guarda_estado_sala("c/Practica03/prueba.txt");
+  guarda_estado_sala("Documentos/Practica3/prueba.txt");
   elimina_sala();
   
   espacio = 10;
@@ -388,7 +394,7 @@ int main(){
   reserva_asiento(20);
   reserva_asiento(30);
   reserva_asiento(40);
-  guarda_estado_sala("c/Practica03/prueba.txt");
+  guarda_estado_sala("Documentos/Practica3/prueba.txt");
   elimina_sala();
 
   printf("Capacidad Máxima: %d \n",capacidad_sala()); 
@@ -397,7 +403,7 @@ int main(){
   
   espacio = 10;
   crea_sala(espacio);  
-  recupera_estado_sala("c/Practica03/prueba.txt");
+  recupera_estado_sala("Documentos/Practica3/prueba.txt");
   printf("Capacidad Máxima: %d \n",capacidad_sala()); 
   printf("Asientos Libres: %d \n",asientos_libres());
   printf("Asientos Ocupados: %d \n",asientos_ocupados()); 
