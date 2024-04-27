@@ -19,6 +19,7 @@ int comprobar_valor_id_asiento(int opcion_usuario, int capacidad){
 
 int main(int argc, char *argv[]){
   int capacidad;
+  int fd;
   //crea_sala(capacidad); // Crea una capacidad con el valor de argv[2]
   
   char* orden_opción = argv[1];
