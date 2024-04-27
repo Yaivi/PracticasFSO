@@ -228,32 +228,37 @@ int guarda_estado_sala(const char* ruta_fichero){
 int recupera_estado_sala(const char* ruta_fichero){
     int nueva_CAPACIDAD_MAXIMA;
     int fd = open(ruta_fichero, O_RDONLY);
+    if (fd == -1) {
+        comprobar_error();
+        return -1;
+    }
     int contenido;
     
     contenido = read(fd, &nueva_CAPACIDAD_MAXIMA, sizeof(int));
     if (contenido == -1) {
-      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
+        comprobar_error();
+        return -1;
     }
     if (nueva_CAPACIDAD_MAXIMA != CAPACIDAD_MAXIMA){
-      exit(-1);
+        comprobar_error();
+        return -1;
     }
     contenido = read(fd, &asientos_libres_variable, sizeof(int));
     if (contenido == -1) {
-      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
+        comprobar_error();
+        return -1;
     }
     contenido = read(fd, &asientos_ocupados_variable, sizeof(int));
     if (contenido == -1) {
-      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
+        comprobar_error();
+        return -1;
     }
     int tam_bloque = coger_tamaño_bloque(ruta_fichero);
     for (int i = 0; i < CAPACIDAD_MAXIMA; i++) {
         contenido = read(fd, &asientos[i], tam_bloque);
         if (contenido == -1) {
-            fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-            exit(-1);
+            comprobar_error();
+            return -1;
         }
         if (contenido == 0) {
             break;
