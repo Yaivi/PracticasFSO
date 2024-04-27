@@ -29,18 +29,45 @@ int comprobar_error_en_misala(){
 
 
 
-int main(int argc, char *argv[]){
-  int capacidad;
-  int fd;
-  //crea_sala(capacidad); // Crea una capacidad con el valor de argv[2]
-  
+int main(int argc, char **argv){
+  int opt;
   char* orden_opción = argv[1];
-  char* f = argv[2];
-  char* ruta = argv[3];
+  char* ruta;
+  int capacidad;
+  int asiento;
+  int fd;
   
-  if(strcmp(orden_opción, "crea") == 0 && strcmp(f,"-f") == 0){
+  int flag_f = 0;
+  int flag_o = 0;
+  int flag_c = 0;
+  int flag_a = 0;
+
+  while ((opt = getopt (argc, argv, "f:c:o:a")) != -1) {
+      switch(opt) {
+      case 'f':
+          flag_f = 1;
+          ruta = malloc(strlen(optarg) + 1);
+          strcpy( ruta, optarg);
+          break;
+      case 'c':
+          flag_c = 1;
+          capacidad = atoi(optarg);
+          break;
+      case 'o':
+          flag_o = 1;
+          ruta = malloc(strlen(optarg) + 1); // Asignar memoria para la ruta        
+          strcpy( ruta, optarg);
+          break;  
+      case 'a':
+          flag_a = 1;
+          asiento = atoi(optarg);
+          break;     
+      } 
+  } 
+  
+  
+  if(strcmp(orden_opción, "crea") == 0 && flag_f == 1 && flag_c == 1){
     if ((fd = open(ruta, O_RDONLY)) == -1) {
-      capacidad = atoi(argv[5]);
       crea_sala(capacidad);
       guarda_estado_sala(ruta);
       elimina_sala();
@@ -53,15 +80,14 @@ int main(int argc, char *argv[]){
     }
   }
   
-  else if(strcmp(orden_opción, "crea") == 0 && strcmp(f,"-o") == 0){
-    capacidad = atoi(argv[5]);
+  else if(strcmp(orden_opción, "crea") == 0 && flag_o == 1){
     crea_sala(capacidad);
     guarda_estado_sala(ruta);
     elimina_sala();
   }
 
 	  
-  else if (strcmp(orden_opción, "reserva") == 0 && strcmp(f,"-f") == 0){
+  else if (strcmp(orden_opción, "reserva") == 0 && flag_f == 1){
     int fd = open(ruta, O_RDWR);
     int contenido;
     if (fd == -1) {
@@ -90,7 +116,7 @@ int main(int argc, char *argv[]){
   }   
 
 	  
-  else if(strcmp(orden_opción, "anula") == 0 && strcmp(f,"-f") == 0 && strcmp(argv[4], "-asientos") == 0){
+  else if(strcmp(orden_opción, "anula") == 0 && flag_f == 1 && flag_a == 1){
     int fd = open(ruta, O_RDONLY);
     int contenido;
     
@@ -139,8 +165,8 @@ int main(int argc, char *argv[]){
   }
 
 	  
-  else if(strcmp(orden_opción, "estado") == 0 && strcmp(f,"-f") == 0){
-    int fd = open(ruta, O_RDONLY);
+  else if(strcmp(orden_opción, "estado") == 0 && flag_f == 1){
+    fd = open(ruta, O_RDONLY);
     int contenido;
     
     contenido = read(fd, &capacidad, sizeof(int));
@@ -159,11 +185,49 @@ int main(int argc, char *argv[]){
       printf("Asiento %d %d \n", i, estado_asiento(i));
     }
   }
+  
+  else if(strcmp(orden_opción, "compara") == 0){
+    char* ruta1 = argv[2];
+    char* ruta2 = argv[3];
+    
+    fd = open(ruta1, O_RDONLY);
+    int contenido;
+    
+    contenido = read(fd, &capacidad, sizeof(int));
+    if (contenido == -1) {
+      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
+      exit(-1);
+    }
+    close(fd);
+    crea_sala(capacidad);
+    size_t capacidad_sala1 = capacidad_sala();
+    int* asientos_sala1;
+    recupera_estadoparcial_sala(ruta, capacidad_sala1, asientos_sala1);
+    
+    
+    
+    
+    int fd = open(ruta1, O_RDONLY);
+    contenido = read(fd, &capacidad, sizeof(int));
+    if (contenido == -1) {
+      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
+      exit(-1);
+    }
+    close(fd);
+    crea_sala(capacidad);
+    
+    recupera_estado_sala(ruta);
+    int capacidad_sala2 = capacidad_sala();
+    int asientos_libres_sala2 = asientos_libres();
+
+  
+  }
 
 	  
   else{
     fprintf(stderr, "Orden no válida\n");
   }
+  free(ruta);
   return 0;
 }
 
