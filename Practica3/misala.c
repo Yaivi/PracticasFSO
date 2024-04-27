@@ -2,6 +2,11 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <errno.h>
 #include "sala.h"
 
 
@@ -15,20 +20,74 @@ int leer_valor_usuario(char *input_usuario){
 int comprobar_valor(int opcion_usuario){
   if (opcion_usuario <= 0){
     return -1;
-  }else{
-    return 0;
   }
+    return 0;
 }
 
 
 int main(int argc, char *argv[]){
   int capacidad;
-  capacidad = atoi(argv[2]);
-  crea_sala(capacidad); // Crea una capacidad con el valor de argv[2]
+  //crea_sala(capacidad); // Crea una capacidad con el valor de argv[2]
   
-  char input_usuario[100];
-  int opcion_usuario;
+  char* orden_opción = argv[1];
+  char* f = argv[2];
+  char* ruta = argv[3];
+
+  for (int i = 0; i<argc; i++){
+    printf("PARAM %d %s\n", i, argv[i]);
+  }
   
+  if(strcmp(orden_opción, "crea") == 0){
+    capacidad = atoi(argv[5]);
+  }
+  
+  else if (strcmp(orden_opción, "reserva") == 0 && strcmp(f,"-f") == 0){
+    
+  }  
+  
+  else if(strcmp(orden_opción, "anula") == 0 && strcmp(f,"-f") == 0){
+    
+  }
+  
+  else if(strcmp(orden_opción, "estado") == 0 && strcmp(f,"-f") == 0){
+    int fd = open(ruta, O_RDONLY);
+    int contenido;
+    
+    contenido = read(fd, &capacidad, sizeof(int));
+    if (contenido == -1) {
+      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
+      exit(-1);
+    }
+    close(fd);
+    crea_sala(capacidad);
+    
+    recupera_estado_sala(ruta);
+    for (int i=1; i<capacidad+1; i++){
+      printf("Asiento %d %d \n", i, estado_asiento(i));
+    }
+  }
+  
+  else{
+    fprintf(stderr, "Orden no válida\n");
+  }
+  
+  return 0;
+}  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  /**
   printf("---Bienvenido a la sala en %s---\n", argv[1]);
   while (1){
 	  printf("\nEscriba el número de la instrucción: \n");
@@ -108,3 +167,4 @@ int main(int argc, char *argv[]){
   }
   return 0;
 }
+**/
