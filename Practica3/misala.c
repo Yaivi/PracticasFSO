@@ -187,43 +187,6 @@ int main(int argc, char **argv){
   }
   
   else if(strcmp(orden_opción, "compara") == 0){
-    char* ruta1 = argv[2];
-    char* ruta2 = argv[3];
-    
-    fd = open(ruta1, O_RDONLY);
-    int contenido;
-    
-    contenido = read(fd, &capacidad, sizeof(int));
-    if (contenido == -1) {
-      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
-    }
-    close(fd);
-    crea_sala(capacidad);
-    size_t capacidad_sala1 = capacidad_sala();
-    int* asientos_sala1;
-    recupera_estadoparcial_sala(ruta, capacidad_sala1, asientos_sala1);
-    
-    
-    
-    
-    int fd = open(ruta1, O_RDONLY);
-    contenido = read(fd, &capacidad, sizeof(int));
-    if (contenido == -1) {
-      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
-    }
-    close(fd);
-    crea_sala(capacidad);
-    
-    recupera_estado_sala(ruta);
-    int capacidad_sala2 = capacidad_sala();
-    int asientos_libres_sala2 = asientos_libres();
-
-  
-  }
-
-  else if(strcmp(orden_opción, "compara") == 0){
     char* ruta1 = argv[3];
     char* ruta2  = argv[4];
     int fd1 = open(ruta1, O_RDONLY);
@@ -236,55 +199,68 @@ int main(int argc, char **argv){
     int asientos_libres2;
     int asientos_ocupados1;
     int asientos_ocupados2;
-
+    
     contenido1 = read(fd1, &capacidad1, sizeof(int));
     if (contenido1 == -1) {
-        comprobar_error_en_misala();
-        return -1;
-    }
-    contenido1 = read(fd1, &asientos_libres1, sizeof(int));
-    if (contenido1 == -1) {
-        comprobar_error_en_misala();
-        return -1;
-    }
-    contenido1 = read(fd1, &asientos_ocupados1, sizeof(int));
-    if (contenido1 == -1) {
-        comprobar_error_en_misala();
-        return -1;
+      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
+      exit(-1);
     }
     close(fd1);
+    crea_sala(capacidad1);
+    recupera_estado_sala(ruta1);
+    int* asientos_ruta1 =(int*)malloc(capacidad1*sizeof(int));
+    if (asientos_ruta1 == NULL){
+      comprobar_error_en_misala();
+      return -1;
+    }
+    
+    for (int i = 1; i < capacidad1+1; i++){
+      asientos_ruta1[i] = estado_asiento(i);
+    }
 
-    contenido2 = read(fd1, &capacidad2, sizeof(int));
+
+    contenido2 = read(fd2, &capacidad2, sizeof(int));
     if (contenido2 == -1) {
-        comprobar_error_en_misala();
-        return -1;
-    }
-    contenido2 = read(fd1, &asientos_libres2, sizeof(int));
-    if (contenido2 == -1) {
-        comprobar_error_en_misala();
-        return -1;
-    }
-    contenido2 = read(fd1, &asientos_ocupados2, sizeof(int));
-    if (contenido2 == -1) {
-        comprobar_error_en_misala();
-        return -1;
+      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
+      exit(-1);
     }
     close(fd2);
+    crea_sala(capacidad2);
+    recupera_estado_sala(ruta2);
+    int* asientos_ruta2 =(int*)malloc(capacidad1*sizeof(int));
+    if (asientos_ruta2 == NULL){
+      comprobar_error_en_misala();
+      return -1;
+    }
+    
+    for (int i = 1; i < capacidad2+1; i++){
+      asientos_ruta2[i] = estado_asiento(i);
+    }
 
-
+    // Comprobaciones de ambas salas
     if (capacidad1 != capacidad2){
       fprintf(stderr, "Las salas pasadas no tienen la misma capacidad");
     }
     if (asientos_libres1 != asientos_libres2){
       fprintf(stderr, "Las salas pasadas no tienen el mismo número de asientos libres");
     }
-
+    
     if (asientos_ocupados1 != asientos_ocupados2){
       fprintf(stderr, "Las salas pasadas no tienen el mismo número de asientos ocupados");
     }
+    
+    for (int i = 0; i<capacidad1; i++){
+      if (asientos_ruta1[i] != asientos_ruta2[i]){
+        fprintf(stderr, "Las salas pasadas no tienen los mismos asientos");
+        return -1;
+      }
+    }
+    fprintf(stderr, "Son las mismas salas");
+    return 0;
+    
   }
 
-
+  
   else{
     fprintf(stderr, "Orden no válida\n");
   }
