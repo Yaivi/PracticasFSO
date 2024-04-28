@@ -129,48 +129,26 @@ int main(int argc, char *argv[]){
     
     contenido = read(fd, &capacidad, sizeof(int));
     if (contenido == -1) {
-        comprobar_error_en_misala();
-        return -1;  
+      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
+      exit(-1);
     }
-    close(fd);
+    
     crea_sala(capacidad);
+    recupera_estado_sala(ruta);
     
-    int num_asientos_pasados = argc - 5;
-    int asientos_fuera_de_rango = 0;
-    int asientos_resultantes_a_anular = 0;
-    int *asientos_a_anular = (int*)malloc(num_asientos_pasados * sizeof(int));
-    if (asientos_a_anular == NULL){
-        comprobar_error_en_misala();
-        return -1;
+    int num_asientos_pasados = argc;
+      
+    for (int i = 5; i < num_asientos_pasados; i++){
+          int asiento = atoi(argv[i]);
+          libera_asiento(asiento);
     }
-    int *asientos_a_fuera_rango_vector = (int*)malloc(num_asientos_pasados * sizeof(int));
-    int index = 0;
-    
-    for (int i = 0; i < num_asientos_pasados; i++){
-      if (comprobar_valor_id_asiento(atoi(argv[5+i]), capacidad) == 0){
-        *(asientos_a_anular + index) = atoi(argv[5+i]);
-        index++;
-      } else {
-        printf("ATOI %d\n", atoi(argv[5+i]));
-        printf("LUGAR: %d\n", asientos_fuera_de_rango);
-        asientos_a_fuera_rango_vector[asientos_fuera_de_rango] = atoi(argv[5+i]);
-        asientos_fuera_de_rango++;
-      }
-    }
-    
-    asientos_resultantes_a_anular = num_asientos_pasados - asientos_fuera_de_rango;     
-    guarda_estadoparcial_sala(ruta, asientos_resultantes_a_anular, asientos_a_anular);
 
-    if (asientos_fuera_de_rango > 0){
-      fprintf(stderr, "No se han podido guardar estos asientos: ");
-      for (int i = 0; i < asientos_fuera_de_rango; i++){
-        printf("%d ", asientos_a_fuera_rango_vector[i]);
-      }
-      printf(" \n");
-    }
-    //Libera la memoria del vector auxiliar para los asientos a anular
-    free(asientos_a_anular);
+    guarda_estado_sala(ruta);
+    elimina_sala();
+    
+    return 0;
   }
+
 
 	  
   else if(strcmp(orden_opción, "estado") == 0 && strcmp(f,"-f") == 0){
