@@ -366,3 +366,26 @@ int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, i
     
     return 0;
 }
+
+
+int main() {
+  printf("---------------------------------\n");
+  crea_sala(10);
+  for (int i = 1; i < 7; i++){
+     reserva_asiento(i*101);
+  }  
+  int ids_asientos[3] = {1, 4, 6}; // Ejemplo de IDs de asientos
+  guarda_estadoparcial_sala("c/Practica03/prueba.txt", sizeof(ids_asientos) / sizeof(ids_asientos[0]), ids_asientos);
+  elimina_sala();
+  printf("---------------------------------\n");
+  crea_sala(10);
+  recupera_estado_sala("c/Practica03/prueba.txt");
+  for (int i = 1; i < CAPACIDAD_MAXIMA+1; i++){
+    printf("ASIENTO : %d estado: %d\n", i, estado_asiento(i));
+  }    
+  elimina_sala();
+  
+  printf("TERMINADO\n");
+  return 0;
+}
+
