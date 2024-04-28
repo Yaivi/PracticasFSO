@@ -222,7 +222,7 @@ int main(int argc, char **argv){
 
   
   }
-	
+
   else if(strcmp(orden_opción, "compara") == 0){
     char* ruta1 = argv[3];
     char* ruta2  = argv[4];
@@ -236,7 +236,7 @@ int main(int argc, char **argv){
     int asientos_libres2;
     int asientos_ocupados1;
     int asientos_ocupados2;
-    
+
     contenido1 = read(fd1, &capacidad1, sizeof(int));
     if (contenido1 == -1) {
         comprobar_error_en_misala();
@@ -253,7 +253,7 @@ int main(int argc, char **argv){
         return -1;
     }
     close(fd1);
-    
+
     contenido2 = read(fd1, &capacidad2, sizeof(int));
     if (contenido2 == -1) {
         comprobar_error_en_misala();
@@ -278,19 +278,16 @@ int main(int argc, char **argv){
     if (asientos_libres1 != asientos_libres2){
       fprintf(stderr, "Las salas pasadas no tienen el mismo número de asientos libres");
     }
-    
+
     if (asientos_ocupados1 != asientos_ocupados2){
       fprintf(stderr, "Las salas pasadas no tienen el mismo número de asientos ocupados");
     }
   }
 
 
-	  
-	  
   else{
     fprintf(stderr, "Orden no válida\n");
   }
   free(ruta);
   return 0;
 }
-
