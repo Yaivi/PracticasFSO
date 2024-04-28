@@ -308,11 +308,10 @@ int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int
       int id_persona_a_guardar = asientos[id_asiento_a_guardar - 1];
       printf("ID ASIENTO A GUARDAR: %d --> ID PERSONA A GUARDAR %d\n", id_asiento_a_guardar, id_persona_a_guardar);
       
-      if (comprueba_id_asiento(id_asientos[i]) == -1){
-        return -1;
-      }
-    
-    off_t nuevo_offset = offset + sizeof(int)*id_asientos[i];
+    if (comprueba_id_asiento(id_asientos[i]) == -1){
+       return -1;
+    }
+    off_t nuevo_offset = offset + id_asientos[i]*sizeof(int);
       if (offset == -1) {
         comprobar_error();
         return -1;
