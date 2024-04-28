@@ -284,49 +284,46 @@ int recupera_estado_sala(const char* ruta_fichero){
 }
 
 
-int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos){
-    if (comprueba_sala() == -1){
-      comprobar_error();
-      return -1;
-    }
-        
-    int fd = open(ruta_fichero, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
-    ssize_t bytes_escritos;
+
+int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos) {
+    int fd = open(ruta_fichero, O_WRONLY | O_TRUNC, 0644);
     if (fd == -1) {
-      comprobar_error();
-      return -1;
-    }
-    
-    off_t offset = 3 * sizeof(int);
-    if (offset == -1) {
-      comprobar_error();
-      return -1;
-    }
-    
-    for (size_t i = 0; i < num_asientos; i++){      
-      int id_asiento_a_guardar = id_asientos[i];      
-      int id_persona_a_guardar = asientos[id_asiento_a_guardar - 1];
-      printf("ID ASIENTO A GUARDAR: %d --> ID PERSONA A GUARDAR %d\n", id_asiento_a_guardar, id_persona_a_guardar);
-      
-    if (comprueba_id_asiento(id_asientos[i]) == -1){
-       return -1;
-    }
-    off_t nuevo_offset = offset + id_asientos[i]*sizeof(int);
-      if (offset == -1) {
         comprobar_error();
         return -1;
-      }
-      lseek(fd, nuevo_offset, SEEK_SET);
-      bytes_escritos = write(fd, &id_persona_a_guardar, sizeof(int));
-      if (bytes_escritos == -1){
+    }
+    
+    if (write(fd, &CAPACIDAD_MAXIMA, sizeof(int)) != sizeof(int)) {
         comprobar_error();
         return -1;
-      }
     }
-    close(fd);
+
+    for (size_t i = 0; i < num_asientos; i++) {
+        int asiento = id_asientos[i];
+        if (asiento < 1 || asiento > CAPACIDAD_MAXIMA) {
+            comprobar_error();
+            return -1;
+        }
+
+        off_t offset = sizeof(int) + (asiento+1) * sizeof(int);
+        if (lseek(fd, offset, SEEK_SET) == -1) {
+            comprobar_error();
+            return -1;
+        }
+
+        int valor_asiento = asientos[asiento - 1];
+        if (write(fd, &valor_asiento, sizeof(int)) != sizeof(int)) {
+            comprobar_error();
+            return -1;
+        }
+    }
+
+    if (close(fd) == -1) {
+        comprobar_error();
+        return -1;
+    }
+
     return 0;
 }
-
 
 int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos){
     int fd = open(ruta_fichero, O_RDONLY);
@@ -371,15 +368,18 @@ int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, i
 int main() {
   printf("---------------------------------\n");
   crea_sala(10);
+  guarda_estado_sala("Documentos/Practica3/pruebaGP.txt");
+  elimina_sala();
+  crea_sala(10);
   for (int i = 1; i < 7; i++){
      reserva_asiento(i*101);
   }  
-  int ids_asientos[3] = {1, 4, 6}; // Ejemplo de IDs de asientos
-  guarda_estadoparcial_sala("c/Practica03/prueba.txt", sizeof(ids_asientos) / sizeof(ids_asientos[0]), ids_asientos);
+  int ids_asientos[4] = {1, 4, 6, 5}; // Ejemplo de IDs de asientos
+  guarda_estadoparcial_sala("Documentos/Practica3/pruebaGP.txt", sizeof(ids_asientos), ids_asientos);
   elimina_sala();
   printf("---------------------------------\n");
   crea_sala(10);
-  recupera_estado_sala("c/Practica03/prueba.txt");
+  recupera_estado_sala("Documentos/Practica3/pruebaGP.txt");
   for (int i = 1; i < CAPACIDAD_MAXIMA+1; i++){
     printf("ASIENTO : %d estado: %d\n", i, estado_asiento(i));
   }    
@@ -388,4 +388,3 @@ int main() {
   printf("TERMINADO\n");
   return 0;
 }
-
