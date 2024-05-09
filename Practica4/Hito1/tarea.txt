@@ -1,1 +1,4 @@
+===== A SOLUCIONAR =====
+Ver por que causa violación de segmento
 
+===== POR IMPLEMENTAR =====
