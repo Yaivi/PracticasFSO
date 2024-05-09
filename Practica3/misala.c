@@ -18,7 +18,7 @@ int comprobar_valor_id_asiento(int opcion_usuario, int capacidad){
 }
 
 int comprobar_valor_id_persona(int opcion_usuario, int capacidad){
-  if (opcion_usuario <= 0 || opcion_usuario > capacidad){
+  if (opcion_usuario <= 0){
     return -1;
   }
     return 0;
@@ -97,18 +97,23 @@ int main(int argc, char *argv[]){
       return -1;
     }
     recupera_estado_sala(ruta);
-    if (argc-3 > asientos_libres()) {
-        fprintf(stderr, "No hay suficientes asientos libres, faltan %d asientos", argc-3-asientos_libres());
+    if (argc-4 > asientos_libres()) {
+        fprintf(stderr, "No hay suficientes asientos libres, faltan %d asientos\n", argc-4-asientos_libres());
         fflush(stderr);
         errno = 0;
         return -1;
     }
+    
+    //int *lista_asientos = malloc((argc-3)*sizeof(int));
+    
     for (int i = 4; i<argc; i++) {
         reserva_asiento(atoi(argv[i]));
         if (comprobar_valor_id_persona(atoi(argv[i]), capacidad) == -1){
           contador_valor_negativo++;
         }
+        
     }
+    //guarda_estadoparcial_sala(ruta, argc-4, );
     guarda_estado_sala(ruta);
     elimina_sala();
     if (contador_valor_negativo > 0 && contador_valor_negativo < argc-4){
@@ -137,10 +142,18 @@ int main(int argc, char *argv[]){
     recupera_estado_sala(ruta);
     
     int num_asientos_pasados = argc;
-      
+    int asientos_realmente_a_guardar = 0;
+    
+    int *lista_asientos = malloc((argc-4)*sizeof(int));
+    
     for (int i = 5; i < num_asientos_pasados; i++){
           int asiento = atoi(argv[i]);
+          if (comprobar_valor_id_asiento(asiento, capacidad) == -1){
+            printf("Asiento no válido\n");
+          }
           libera_asiento(asiento);
+          *(lista_asientos + asientos_realmente_a_guardar) = asiento;
+          asientos_realmente_a_guardar++;
     }
 
     guarda_estado_sala(ruta);
