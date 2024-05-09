@@ -9,6 +9,14 @@
 #include <errno.h>
 #include "sala.h"
 
+
+void* rutina_reservar_y_liberar_asientos(void* arg){
+  for (int i = 0; i < 3; i++){
+    
+  }
+}
+
+
 int main(int argc, char *argv[]){
   int n = atoi(argv[1]);
 
