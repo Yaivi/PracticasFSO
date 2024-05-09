@@ -291,12 +291,8 @@ int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int
         comprobar_error();
         return -1;
     }
-    
-    if (write(fd, &CAPACIDAD_MAXIMA, sizeof(int)) != sizeof(int)) {
-        comprobar_error();
-        return -1;
-    }
 
+	
     for (size_t i = 0; i < num_asientos; i++) {
         int asiento = id_asientos[i];
         if (asiento < 1 || asiento > CAPACIDAD_MAXIMA) {
