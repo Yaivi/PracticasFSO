@@ -2,3 +2,6 @@
 Ver por que causa violación de segmento
 
 ===== POR IMPLEMENTAR =====
+
+===== PARA EJECUTAR =====
+gcc -lpthread "ruta de sala.c" "ruta de retardo.c" "ruta de multihilos.c" -o "ruta del ejecutable"
