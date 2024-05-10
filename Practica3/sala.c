@@ -296,28 +296,48 @@ int recupera_estado_sala(const char* ruta_fichero){
 
 
 int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos) {
-    int fd = open(ruta_fichero, O_WRONLY | O_TRUNC, 0644);
+  
+  for (size_t i = 0; i < num_asientos/sizeof(int); i++) {
+    int asiento = id_asientos[i];
+    printf("Asiento %d\n", asiento);
+    if (asiento < 1 || asiento > CAPACIDAD_MAXIMA) {
+      fprintf(stderr, "Hay un asiento o más que no se encuentran en el rango de la sala.\n");
+      comprobar_error();
+      return -1;
+      }
+  }
+  
+  int fd = open(ruta_fichero, O_WRONLY | O_TRUNC, 0644);
     if (fd == -1) {
         comprobar_error();
         return -1;
     }
+  /**    
+    printf("ANTES DEL LSEEK\n");
+    if (lseek(fd, sizeof(int), SEEK_SET) == -1){
+      comprobar_error();
+      return -1;
+    }
+    printf("DESPUÉS DEL LSEEK\n");
+**/
 
-	
-    for (size_t i = 0; i < num_asientos; i++) {
+    if (write(fd, &CAPACIDAD_MAXIMA, sizeof(int)) != sizeof(int)) {
+        comprobar_error();
+        return -1;
+    }
+
+
+    for (size_t i = 0; i < num_asientos/sizeof(int); i++) {
         int asiento = id_asientos[i];
-        if (asiento < 1 || asiento > CAPACIDAD_MAXIMA) {
-            comprobar_error();
-            return -1;
-        }
-
-        off_t offset = sizeof(int) + (asiento+1) * sizeof(int);
+        
+        off_t offset = sizeof(int) + ((asiento+1) * sizeof(int));
         if (lseek(fd, offset, SEEK_SET) == -1) {
             comprobar_error();
             return -1;
         }
 
         int valor_asiento = asientos[asiento - 1];
-        if (write(fd, &valor_asiento, sizeof(int)) != sizeof(int)) {
+        if (write(fd, &valor_asiento, sizeof(int)) == -1) {
             comprobar_error();
             return -1;
         }
@@ -330,6 +350,7 @@ int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int
 
     return 0;
 }
+
 
 int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos){
     int fd = open(ruta_fichero, O_RDONLY);
