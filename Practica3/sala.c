@@ -175,6 +175,16 @@ int coger_tamaño_bloque(const char* ruta_fichero) {
 }
 
 
+int coger_tamaño_archivo(const char* ruta_fichero) {
+    struct stat estado;
+    if (stat(ruta_fichero, &estado) == -1) {
+        fprintf(stderr, "Error al acceder al estado del archivo\n");
+        exit(-1);
+    }
+    return estado.st_size;
+}
+
+
 int guarda_estado_sala(const char* ruta_fichero){
     ssize_t bytes_escritos;
     if (comprueba_sala() == -1){
