@@ -353,9 +353,19 @@ int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int
 
 
 int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos){
+    for (size_t i = 0; i < num_asientos/sizeof(int); i++) {
+    int asiento = id_asientos[i];
+    printf("Asiento %d\n", asiento);
+    if (asiento < 1 || asiento > CAPACIDAD_MAXIMA) {
+      fprintf(stderr, "Hay un asiento o más que no se encuentran en el rango de la sala.\n");
+      comprobar_error();
+      return -1;
+      }
+  }
+    
     int fd = open(ruta_fichero, O_RDONLY);
     if (fd == -1) {
-        fprintf(stderr, "Error al abrir el archivo\n");
+        comprobar_error();
         return -1;
     }
     int contenido;   
@@ -372,7 +382,7 @@ int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, i
       lseek(fd, nuevo_offset, SEEK_SET);
       contenido = read(fd, &asientos[id_asientos[i]-1], sizeof(int));
       if (contenido == -1){
-        perror("Error al leer el estado parcial de la sala");
+        comprobar_error();
         return -1;
         } 
     }
