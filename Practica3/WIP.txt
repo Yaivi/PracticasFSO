@@ -5,11 +5,11 @@
 
 
 - int guarda_estado_sala (const char* ruta_fichero): Guarda el estado actual de la sala en el fichero que se pasa como argumento, sobreescribiendo toda la información contenida en el fichero. Devuelve 0 si todo ha ido bien o -1 en caso de error. -> 
-    *No se entiende el bucle donde se escribe el vector. Si se trabaja con escrituras en tamaños del bloque, ¿Qué sentido tiene que esto se haga en un bucle donde se itera para cada elemento del vector?
+    (HECHO) *No se entiende el bucle donde se escribe el vector. Si se trabaja con escrituras en tamaños del bloque, ¿Qué sentido tiene que esto se haga en un bucle donde se itera para cada elemento del vector?
 
 
 - int recupera_estado_sala (const char* ruta_fichero): Recupera el estado de la sala a partir de la información guardada en el fichero que se pasa como argumento, sobreescribiendo toda ... -> 
-    *No se entiende el bucle donde se escribe el vector. Si se trabaja con escrituras en tamaños del bloque, ¿Qué sentido tiene que esto se haga en un bucle donde se itera para cada elemento del vector?
+    (HECHO) *No se entiende el bucle donde se escribe el vector. Si se trabaja con escrituras en tamaños del bloque, ¿Qué sentido tiene que esto se haga en un bucle donde se itera para cada elemento del vector?
 
 
 - int guarda_estadoparcial_sala (const char* ruta_fichero, size_t num_asientos, int* id_asientos): Guarda el estado de un conjunto de asientos de la sala en un fichero preexistente que se pasa como argumento, sobreescribiendo la información contenida en el fichero. Devuelve 0 si todo ha ido bien o -1 en caso de error. -> 
