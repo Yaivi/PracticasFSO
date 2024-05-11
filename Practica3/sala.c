@@ -175,16 +175,6 @@ int coger_tamaño_bloque(const char* ruta_fichero) {
 }
 
 
-int coger_tamaño_archivo(const char* ruta_fichero) {
-    struct stat estado;
-    if (stat(ruta_fichero, &estado) == -1) {
-        fprintf(stderr, "Error al acceder al estado del archivo\n");
-        exit(-1);
-    }
-    return estado.st_size;
-}
-
-
 int guarda_estado_sala(const char* ruta_fichero){
     ssize_t bytes_escritos;
     if (comprueba_sala() == -1){
@@ -222,17 +212,23 @@ int guarda_estado_sala(const char* ruta_fichero){
     }
 
     // Guardar en el fichero el vector asientos
-    for (int i = 0; i<CAPACIDAD_MAXIMA; i++) {
-      bytes_escritos = write(fd, &asientos[i], tam_bloque);
+    int num_bloques = CAPACIDAD_MAXIMA / tam_bloque;
+    int resto = CAPACIDAD_MAXIMA % tam_bloque;
+    for (int i = 0; i < num_bloques; i++) {
+      bytes_escritos = write(fd, &asientos[i*tam_bloque], tam_bloque*sizeof(int));
       if (bytes_escritos == -1) {
           comprobar_error();
           return -1;
       }
-      if (bytes_escritos == 0)
-        {
-            break;
-        }
     }
+    if (resto > 0){
+      bytes_escritos = write(fd, &asientos[num_bloques * tam_bloque], resto*sizeof(int));
+      if (bytes_escritos == -1) {
+      comprobar_error();
+      return -1;
+      }
+    }
+      
     close(fd);
     return 0;
 }
@@ -266,18 +262,24 @@ int recupera_estado_sala(const char* ruta_fichero){
         comprobar_error();
         return -1;
     }
-    int tam_bloque = coger_tamaño_bloque(ruta_fichero);
-    for (int i = 0; i < CAPACIDAD_MAXIMA; i++) {
-        contenido = read(fd, &asientos[i], tam_bloque);
+
+    int tam_bloque  = coger_tamaño_bloque(ruta_fichero);
+    int num_bloques = CAPACIDAD_MAXIMA / tam_bloque;
+    int resto = CAPACIDAD_MAXIMA % tam_bloque;
+    for (int i = 0; i < num_bloques; i++) {
+        contenido = read(fd, &asientos[i*tam_bloque], tam_bloque*sizeof(int));
         if (contenido == -1) {
             comprobar_error();
             return -1;
         }
-        if (contenido == 0) {
-            break;
-        }
     }
-    
+    if (resto > 0){
+        contenido = read(fd, &asientos[num_bloques * tam_bloque], resto*sizeof(int));      
+        if (contenido == -1) {
+          comprobar_error();
+          return -1;
+        }
+    }    
     close(fd);
     
     // Ajuste de las variables de asientos libres y ocupados
@@ -292,7 +294,6 @@ int recupera_estado_sala(const char* ruta_fichero){
     
     return 0;
 }
-
 
 
 int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos) {
