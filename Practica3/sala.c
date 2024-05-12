@@ -296,59 +296,50 @@ int recupera_estado_sala(const char* ruta_fichero){
 }
 
 
-int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos) {
-  
-  for (size_t i = 0; i < num_asientos/sizeof(int); i++) {
-    int asiento = id_asientos[i];
-    printf("Asiento %d\n", asiento);
-    if (asiento < 1 || asiento > CAPACIDAD_MAXIMA) {
-      fprintf(stderr, "Hay un asiento o más que no se encuentran en el rango de la sala.\n");
-      comprobar_error();
-      return -1;
-      }
-  }
-  
-  int fd = open(ruta_fichero, O_WRONLY | O_TRUNC, 0644);
+int guarda_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, int* id_asientos){
+    for (size_t i = 0; i < num_asientos/sizeof(int); i++) {
+        int asiento = id_asientos[i];
+        printf("Asiento %d\n", asiento);
+        if (asiento < 1 || asiento > CAPACIDAD_MAXIMA) {
+            fprintf(stderr, "Hay un asiento o más que no se encuentran en el rango de la sala.\n");
+            comprobar_error();
+            return -1;
+        }
+    }
+    
+    int fd = open(ruta_fichero, O_WRONLY);
     if (fd == -1) {
         comprobar_error();
         return -1;
     }
-  /**    
-    printf("ANTES DEL LSEEK\n");
-    if (lseek(fd, sizeof(int), SEEK_SET) == -1){
-      comprobar_error();
-      return -1;
-    }
-    printf("DESPUÉS DEL LSEEK\n");
-**/
-
-    if (write(fd, &CAPACIDAD_MAXIMA, sizeof(int)) != sizeof(int)) {
-        comprobar_error();
-        return -1;
-    }
-
-
-    for (size_t i = 0; i < num_asientos/sizeof(int); i++) {
-        int asiento = id_asientos[i];
-        
-        off_t offset = sizeof(int) + ((asiento+1) * sizeof(int));
-        if (lseek(fd, offset, SEEK_SET) == -1) {
-            comprobar_error();
+    
+    off_t offset = 3 * sizeof(int);
+    for (size_t i = 0; i < num_asientos/sizeof(int); i++){
+        int id_asiento_a_guardar = id_asientos[i]-1;
+        if (comprueba_id_asiento(id_asiento_a_guardar) == -1){
             return -1;
         }
 
-        int valor_asiento = asientos[asiento - 1];
-        if (write(fd, &valor_asiento, sizeof(int)) == -1) {
+        off_t nuevo_offset = offset + id_asiento_a_guardar*sizeof(int);
+        lseek(fd, nuevo_offset, SEEK_SET);
+        int id_persona_a_guardar = asientos[id_asiento_a_guardar];
+        if (write(fd, &id_persona_a_guardar, sizeof(int)) == -1){
             comprobar_error();
             return -1;
+        } 
+    }
+    close(fd);
+    
+    // Ajuste de las variables de asientos libres y ocupados
+    asientos_ocupados_variable = 0;
+    asientos_libres_variable = 0;
+    for (int i = 1; i <= CAPACIDAD_MAXIMA; i++){
+        if (*(asientos + i -1) == -1){
+            asientos_libres_variable++;
         }
     }
-
-    if (close(fd) == -1) {
-        comprobar_error();
-        return -1;
-    }
-
+    asientos_ocupados_variable = CAPACIDAD_MAXIMA - asientos_libres_variable;
+    
     return 0;
 }
 
