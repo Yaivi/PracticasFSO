@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
   }
 
 	  
-  else if (strcmp(orden_opción, "reserva") == 0 && strcmp(f,"-f") == 0){
+else if (strcmp(orden_opción, "reserva") == 0 && strcmp(f, "-f") == 0) {
     int contador_valor_negativo = 0;
     int fd = open(ruta, O_RDWR);
     int contenido;
@@ -89,45 +89,77 @@ int main(int argc, char *argv[]){
     contenido = read(fd, &capacidad, sizeof(int));
     if (contenido == -1) {
         comprobar_error_en_misala();
+        close(fd);
         return -1;  
     }
-    crea_sala(capacidad);
-    if (crea_sala(capacidad) == -1){
-      comprobar_capacidad_en_misala();
-      return -1;
+    close(fd);
+    
+    if (crea_sala(capacidad) == -1) {
+        comprobar_capacidad_en_misala();
+        return -1;
     }
     recupera_estado_sala(ruta);
-    if (argc-4 > asientos_libres()) {
-        fprintf(stderr, "No hay suficientes asientos libres, faltan %d asientos\n", argc-4-asientos_libres());
+    int num_asientos = argc-4;
+    
+    for (int i = 4; i < argc; i++) {
+        int id_persona = atoi(argv[i]);
+        if (comprobar_valor_id_persona(id_persona, capacidad) == -1) {
+          num_asientos -= 1;
+        }
+    }
+
+    if (num_asientos > asientos_libres()) {
+        fprintf(stderr, "No hay suficientes asientos libres, faltan %d asientos\n", argc - 4 - asientos_libres());
         fflush(stderr);
         errno = 0;
         return -1;
     }
     
-    //int *lista_asientos = malloc((argc-3)*sizeof(int));
+    int *lista_asientos = malloc((argc - 4) * sizeof(int));
+    if (lista_asientos == NULL) {
+        comprobar_error_en_misala();
+        return -1;
+    }
     
-    for (int i = 4; i<argc; i++) {
-        reserva_asiento(atoi(argv[i]));
-        if (comprobar_valor_id_persona(atoi(argv[i]), capacidad) == -1){
-          contador_valor_negativo++;
+    int index = 0;
+    for (int i = 4; i < argc; i++) {
+        int id_persona = atoi(argv[i]);
+        if (comprobar_valor_id_persona(id_persona, capacidad) == -1) {
+            contador_valor_negativo++;
+        } else {
+            lista_asientos[index] = reserva_asiento(id_persona);
+            index++;
         }
-        
     }
-    //guarda_estadoparcial_sala(ruta, argc-4, );
-    guarda_estado_sala(ruta);
+    
+    int num_asientos_a_reservar = argc - 4 - contador_valor_negativo;
+    int *lista_asientos_a_reservar = malloc(num_asientos_a_reservar * sizeof(int));
+    if (lista_asientos_a_reservar == NULL) {
+        comprobar_error_en_misala();
+        free(lista_asientos);
+        return -1;
+    }
+    
+    for (int i = 0; i < num_asientos_a_reservar; i++) {
+        lista_asientos_a_reservar[i] = lista_asientos[i];
+    }
+    
+    guarda_estadoparcial_sala(ruta, num_asientos_a_reservar * sizeof(int), lista_asientos_a_reservar);
     elimina_sala();
-    if (contador_valor_negativo > 0 && contador_valor_negativo < argc-4){
-      printf("Reserva completa pero con fallos\n");
+    
+    free(lista_asientos);
+    free(lista_asientos_a_reservar);
+    
+    if (contador_valor_negativo > 0 && contador_valor_negativo < argc - 4) {
+        printf("Reserva completa pero con fallos\n");
+    } else if (contador_valor_negativo == argc - 4) {
+        printf("Reserva no completada\n");
+    } else {
+        printf("Reserva completada\n");
     }
-    if (contador_valor_negativo == argc-4){
-      printf("Reserva no completada\n");
-    }
-    if (contador_valor_negativo == 0){
-      printf("Reserva completada\n");
-    }
-  }   
+}
 
-	  
+	
   else if(strcmp(orden_opción, "anula") == 0 && strcmp(f,"-f") == 0 && strcmp(argv[4], "-asientos") == 0){
     int fd = open(ruta, O_RDONLY);
     int contenido;
