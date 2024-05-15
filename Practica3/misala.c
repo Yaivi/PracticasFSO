@@ -159,43 +159,89 @@ else if (strcmp(orden_opción, "reserva") == 0 && strcmp(f, "-f") == 0) {
     }
 }
 
-	
-  else if(strcmp(orden_opción, "anula") == 0 && strcmp(f,"-f") == 0 && strcmp(argv[4], "-asientos") == 0){
-    int fd = open(ruta, O_RDONLY);
-    int contenido;
-    
-    contenido = read(fd, &capacidad, sizeof(int));
-    if (contenido == -1) {
-      fprintf(stderr, "Error %d al leer el archivo: \n", errno);
-      exit(-1);
+
+else if (strcmp(orden_opción, "anula") == 0 && strcmp(f, "-f") == 0 && strcmp(argv[4], "-asientos") == 0) {
+    int fd = open(ruta, O_RDWR);
+    if (fd == -1) {
+        comprobar_error_en_misala();
+        return -1;
     }
     
-    crea_sala(capacidad);
+    int contenido = read(fd, &capacidad, sizeof(int));
+    if (contenido == -1) {
+        comprobar_error_en_misala();
+        close(fd);
+        return -1;
+    }
+    close(fd);
+    
+    if (crea_sala(capacidad) == -1) {
+        comprobar_capacidad_en_misala();
+        return -1;
+    }    
     recupera_estado_sala(ruta);
     
-    int num_asientos_pasados = argc;
-    int asientos_realmente_a_guardar = 0;
+    int num_asientos = argc - 5;
+    int contador_valor_negativo = 0;
     
-    int *lista_asientos = malloc((argc-4)*sizeof(int));
-    
-    for (int i = 5; i < num_asientos_pasados; i++){
-          int asiento = atoi(argv[i]);
-          if (comprobar_valor_id_asiento(asiento, capacidad) == -1){
-            printf("Asiento no válido\n");
-          }
-          libera_asiento(asiento);
-          *(lista_asientos + asientos_realmente_a_guardar) = asiento;
-          asientos_realmente_a_guardar++;
+    int *lista_asientos = malloc(num_asientos * sizeof(int));
+    if (lista_asientos == NULL) {
+        comprobar_error_en_misala();
+        return -1;
     }
-
-    guarda_estado_sala(ruta);
-    elimina_sala();
+        
+    for (int i = 5; i < argc; i++) {
+        int num_asiento = atoi(argv[i]);
+        if (num_asiento < 1 || num_asiento > capacidad) {
+            contador_valor_negativo++;
+        } else {
+            lista_asientos[i - 5] = num_asiento;
+        }
+    }
     
-    return 0;
-  }
+    int num_asientos_a_anular = num_asientos - contador_valor_negativo;
+    int *lista_asientos_a_anular = malloc(num_asientos_a_anular * sizeof(int));
+    if (lista_asientos_a_anular == NULL) {
+        comprobar_error_en_misala();
+        free(lista_asientos);
+        return -1;
+    }
+    
+    int index = 0;
+    for (int i = 0; i < num_asientos; i++) {
+        if (lista_asientos[i] >= 1 && lista_asientos[i] <= capacidad) {
+            lista_asientos_a_anular[index] = lista_asientos[i];
+            index++;
+        }
+    }
+    
+    // Liberar los asientos válidos
+    for (int i = 0; i < num_asientos_a_anular; i++) {
+        libera_asiento(lista_asientos_a_anular[i]);
+    }
+    
+    if (guarda_estadoparcial_sala(ruta, num_asientos_a_anular * sizeof(int), lista_asientos_a_anular) == -1) {
+        comprobar_error_en_misala();
+        free(lista_asientos);
+        free(lista_asientos_a_anular);
+        return -1;
+    }
+    
+    // Eliminación de recursos
+    elimina_sala();
+    free(lista_asientos);
+    free(lista_asientos_a_anular);
+    
+    if (contador_valor_negativo > 0 && contador_valor_negativo < num_asientos) {
+        printf("Anulación completa pero con fallos\n");
+    } else if (contador_valor_negativo == num_asientos) {
+        printf("Anulación no completada\n");
+    } else {
+        printf("Anulación completada\n");
+    }
+}	
 
-
-	  
+  
   else if(strcmp(orden_opción, "estado") == 0 && strcmp(f,"-f") == 0){
     int fd = open(ruta, O_RDONLY);
     int contenido;
