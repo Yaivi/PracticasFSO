@@ -431,7 +431,8 @@ int recupera_estadoparcial_sala(const char* ruta_fichero, size_t num_asientos, i
         comprobar_error();
         return -1;
     }
-    
+    close(fd);
+  
     if (asientos_libres() != asientos_libres_fichero || asientos_ocupados() != asientos_ocupados_fichero){
       // Ajuste de las variables de asientos libres y ocupados
       asientos_ocupados_variable = 0;
