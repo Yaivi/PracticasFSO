@@ -51,7 +51,6 @@ int main(int argc, char *argv[]){
   if(strcmp(orden_opción, "crea") == 0 && strcmp(f,"-f") == 0){
     if ((fd = open(ruta, O_RDONLY)) == -1) {
       capacidad = atoi(argv[5]);
-      crea_sala(capacidad);
       if (crea_sala(capacidad) == -1){
         return -1;
       }
@@ -68,7 +67,6 @@ int main(int argc, char *argv[]){
   
   else if(strcmp(orden_opción, "crea") == 0 && strcmp(f,"-o") == 0){
     capacidad = atoi(argv[5]);
-    crea_sala(capacidad);
     if (crea_sala(capacidad) == -1){
       comprobar_capacidad_en_misala();
       return -1;
