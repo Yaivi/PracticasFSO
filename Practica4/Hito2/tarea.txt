@@ -1,1 +1,2 @@
-
+==========POR HACER==========
+- Poner en las funciones de sala.c los mutex, con lock y unlock
