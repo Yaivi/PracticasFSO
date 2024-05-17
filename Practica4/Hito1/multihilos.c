@@ -49,11 +49,14 @@ int main(int argc, char *argv[]) {
           pthread_create(&hilos[i], NULL, funcion_hito1, (void*)&id_hilo[i]);
           pthread_create(&hilo_estado, NULL, ver_estado, NULL);
       }
+      sleep(6);
       printf("iteracion, para revisar que no se queda limpio el archivo\n");
+      ver_estado(NULL);
+
       for (int i = 0; i<num_hilos; i++) {
           pthread_join(hilos[i], NULL);
       }
-        ver_estado;
+      
   }
   else{
     fprintf(stderr, "Orden no válida\n");
