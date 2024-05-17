@@ -39,7 +39,7 @@ void* funcion_hito1(void* arg) {
 
 int main(int argc, char *argv[]) {
   if  (strcmp(argv[1], "multihilos") == 0){
-      crea_sala(10);
+      crea_sala(50);
       pthread_t hilos[MAX_HILOS];
       pthread_t hilo_estado;
       int num_hilos = atoi(argv[2]);
