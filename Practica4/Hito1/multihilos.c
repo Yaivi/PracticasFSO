@@ -39,21 +39,21 @@ void* funcion_hito1(void* arg) {
 
 int main(int argc, char *argv[]) {
   if  (strcmp(argv[1], "multihilos") == 0){
-      crea_sala(30);
+      crea_sala(10);
       pthread_t hilos[MAX_HILOS];
       pthread_t hilo_estado;
       int num_hilos = atoi(argv[2]);
       int id_hilo[num_hilos];
-      for (int i = 0; i<num_hilos-1; i++) {
+      for (int i = 0; i<num_hilos; i++) {
           id_hilo[i] = i+1; 
           pthread_create(&hilos[i], NULL, funcion_hito1, (void*)&id_hilo[i]);
-          
           pthread_create(&hilo_estado, NULL, ver_estado, NULL);
       }
-      
+      printf("iteracion, para revisar que no se queda limpio el archivo\n");
       for (int i = 0; i<num_hilos; i++) {
           pthread_join(hilos[i], NULL);
       }
+        ver_estado;
   }
   else{
     fprintf(stderr, "Orden no válida\n");
