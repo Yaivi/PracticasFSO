@@ -109,6 +109,7 @@ int main(int argc, char **argv){
        return -1;
     }
     guarda_estado_sala(ruta);
+    printf("Se ha sobreescrito el archivo con los datos pasados\n");
     elimina_sala();
   }
 
