@@ -194,17 +194,12 @@ int main(int argc, char **argv){
     int *lista_asientos = malloc(num_asientos * sizeof(int));
     for (int j = 0;j<num_personas_pasados;j++) {
       int id_persona_actual = *(asientos + j);
-      printf("persona %d\n", id_persona_actual);
       for (int i = 1; i < capacidad+1; i++){
           if (estado_asiento(i) == id_persona_actual) {
               lista_asientos[num_asientos_validos++] = i;
           }
       }
     }
-    for (int i = 0; i<capacidad;i++) {
-        printf("%d\n", lista_asientos[i]);
-    }
-    
     for (int i = 0; i < num_asientos_validos; i++) {
         libera_asiento(lista_asientos[i]);
     }
