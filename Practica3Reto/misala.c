@@ -295,12 +295,7 @@ int main(int argc, char **argv){
       fprintf(stderr, "Las salas pasadas no tienen la misma capacidad\n");
       return -1;
     }
-    
-    if (asientos_libres1 != asientos_libres2){
-      fprintf(stderr, "Las salas pasadas no tienen el mismo número de asientos libres\n");
-      return -1;
-    }
-    
+        
     if (asientos_ocupados1 != asientos_ocupados2){
       fprintf(stderr, "Las salas pasadas no tienen el mismo número de asientos ocupados\n");
       return -1;
