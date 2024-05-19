@@ -196,15 +196,19 @@ int coger_tamaño_bloque(const char* ruta_fichero) {
 
 
 int guarda_estado_sala(const char* ruta_fichero){
-    if (comprobar_capacidad_salafichero_misma_salaactual(ruta_fichero) == -1){
-      return -1;
-    }
-
     ssize_t bytes_escritos;
     if (comprueba_sala() == -1){
       printf("Error: no se ha creado una sala");
       return -1;
     }
+    
+    int fd = open(ruta_fichero, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+
+    if (fd == -1) {
+        comprobar_error();
+        return -1;
+    }
+    int tam_bloque  = coger_tamaño_bloque(ruta_fichero);
     int fd = open(ruta_fichero, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
 
     if (fd == -1) {
