@@ -209,13 +209,6 @@ int guarda_estado_sala(const char* ruta_fichero){
         return -1;
     }
     int tam_bloque  = coger_tamaño_bloque(ruta_fichero);
-    int fd = open(ruta_fichero, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
-
-    if (fd == -1) {
-        comprobar_error();
-        return -1;
-    }
-    int tam_bloque  = coger_tamaño_bloque(ruta_fichero);
     
     // Guardar en el fichero CAPACIDAD_MAXIMA
     write(fd, &CAPACIDAD_MAXIMA, sizeof(int));
