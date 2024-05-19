@@ -297,7 +297,6 @@ int main(int argc, char **argv){
     }
     
     if (asientos_libres1 != asientos_libres2){
-      printf("%d, %d\n", asientos_libres1, asientos_libres2);
       fprintf(stderr, "Las salas pasadas no tienen el mismo número de asientos libres\n");
       return -1;
     }
