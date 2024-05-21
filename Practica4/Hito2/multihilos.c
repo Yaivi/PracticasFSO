@@ -7,21 +7,62 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <pthread.h>
+#include "retardo.h"
 #include "sala.h"
 
 
-void* rutina_reservar_y_liberar_asientos(void* arg){
-  for (int i = 0; i < 3; i++){
-    
-  }
+#define MAX_HILOS 10
+
+
+void* ver_estado(void* arg) {
+    int capacidad = capacidad_sala();
+    for (int i=1; i<capacidad+1; i++){
+      printf("Asiento %d %d \n", i, estado_asiento(i));
+    }
+    return NULL;
+}
+void* funcion_hito1(void* arg) {
+  int *n_hilo = (int*) arg;
+  int asiento1 = reserva_asiento(*n_hilo);
+  pausa_aleatoria(3);
+  int asiento2 = reserva_asiento(*n_hilo);
+  pausa_aleatoria(3);
+  int asiento3 = reserva_asiento(*n_hilo);
+  pausa_aleatoria(3);
+  libera_asiento(asiento1);
+  pausa_aleatoria(3);
+  libera_asiento(asiento2);
+  pausa_aleatoria(3);
+  libera_asiento(asiento3);
+  pausa_aleatoria(3);
+  return NULL;
 }
 
+int main(int argc, char *argv[]) {
+  if  (strcmp(argv[1], "multihilos") == 0){
+      crea_sala(30);
+      pthread_t hilos[MAX_HILOS];
+      pthread_t hilo_estado;
+      int num_hilos = atoi(argv[2]);
+      int id_hilo[num_hilos];
+      for (int i = 0; i<num_hilos; i++) {
+          id_hilo[i] = i+1; 
+          pthread_create(&hilos[i], NULL, funcion_hito1, (void*)&id_hilo[i]);
+      }
+      sleep(20);
+      printf("iteracion, para revisar que se queda limpio el archivo\n");
+      pthread_create(&hilo_estado, NULL, ver_estado, NULL);
+      pthread_join(hilo_estado, NULL);
 
-int main(int argc, char *argv[]){
-  int n = atoi(argv[1]);
-
-  for (int i = 0; i < n; i++){
-    //pthread_t un_hilo;
-    //pthread_t otro_hilo;
+      for (int i = 0; i<num_hilos; i++) {
+          pthread_join(hilos[i], NULL);
+          
+      }
+      elimina_sala();
   }
+  else{
+    fprintf(stderr, "Orden no válida\n");
+  }
+  return 0;
 }
