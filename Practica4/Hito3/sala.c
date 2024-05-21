@@ -88,6 +88,9 @@ int reserva_asiento(int id_persona){
 
 int libera_asiento(int id_asiento){
         pthread_mutex_lock(&cerrojo);
+        while (asientos_ocupados_variable <= 0){
+            pthread_cond_wait(&condición_wait, &cerrojo);
+        }
         if (comprueba_sala() == -1){
                 pthread_mutex_unlock(&cerrojo);
                 return -1; 
