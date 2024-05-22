@@ -12,10 +12,8 @@
 
 #define MAX_HILOS 10
 
-typedef struct {
-    int n_hilo;
-    int asientos_reservados[3];
-} hilo_data;
+int n_hilos[MAX_HILOS];
+int asientos_reservados[MAX_HILOS][3];
 
 void* ver_estado(void* arg) {
     int capacidad = capacidad_sala();
@@ -26,23 +24,23 @@ void* ver_estado(void* arg) {
 }
 
 void* funcion_hito3_reservar(void* arg) {
-    hilo_data* data = (hilo_data*)arg;
-    data->asientos_reservados[0] = reserva_asiento(data->n_hilo);
+    int index = *(int*)arg;
+    asientos_reservados[index][0] = reserva_asiento(n_hilos[index]);
     pausa_aleatoria(3);
-    data->asientos_reservados[1] = reserva_asiento(data->n_hilo);
+    asientos_reservados[index][1] = reserva_asiento(n_hilos[index]);
     pausa_aleatoria(3);
-    data->asientos_reservados[2] = reserva_asiento(data->n_hilo);
+    asientos_reservados[index][2] = reserva_asiento(n_hilos[index]);
     pausa_aleatoria(3);
     return NULL;
 }
 
 void* funcion_hito3_liberar(void* arg) {
-    hilo_data* data = (hilo_data*)arg;
-    libera_asiento(data->asientos_reservados[0]);
+    int index = *(int*)arg;
+    libera_asiento(asientos_reservados[index][0]);
     pausa_aleatoria(3);
-    libera_asiento(data->asientos_reservados[1]);
+    libera_asiento(asientos_reservados[index][1]);
     pausa_aleatoria(3);
-    libera_asiento(data->asientos_reservados[2]);
+    libera_asiento(asientos_reservados[index][2]);
     pausa_aleatoria(3);
     return NULL;
 }
@@ -60,11 +58,12 @@ int main(int argc, char *argv[]) {
         pthread_t hilo_estado;
         int num_hilos = atoi(argv[2]);
         int num_hilos_liberar = atoi(argv[3]);
-        hilo_data hilos_data[MAX_HILOS];
+        int indices[MAX_HILOS];
 
         for (int i = 0; i < num_hilos; i++) {
-            hilos_data[i].n_hilo = i + 1;
-            pthread_create(&hilos[i], NULL, funcion_hito3_reservar, (void*)&hilos_data[i]);
+            n_hilos[i] = i + 1;
+            indices[i] = i;
+            pthread_create(&hilos[i], NULL, funcion_hito3_reservar, (void*)&indices[i]);
         }
 
         for (int i = 0; i < num_hilos; i++) {
@@ -72,7 +71,7 @@ int main(int argc, char *argv[]) {
         }
 
         for (int i = 0; i < num_hilos_liberar; i++) {
-            pthread_create(&hilos_liberar[i], NULL, funcion_hito3_liberar, (void*)&hilos_data[i]);
+            pthread_create(&hilos_liberar[i], NULL, funcion_hito3_liberar, (void*)&indices[i]);
         }
 
         for (int i = 0; i < num_hilos_liberar; i++) {
