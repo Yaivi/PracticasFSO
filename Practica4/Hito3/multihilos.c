@@ -13,7 +13,7 @@
 #define MAX_HILOS 10
 
 int n_hilos[MAX_HILOS];
-int asientos_reservados[MAX_HILOS][3];
+int asientos_reservados[3];
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void* ver_estado(void* arg) {
@@ -31,22 +31,22 @@ void* ver_estado(void* arg) {
 
 void* funcion_hito3_reservar(void* arg) {
     int index = *(int*)arg;
-    asientos_reservados[index][0] = reserva_asiento(n_hilos[index]);
+    asientos_reservados[0] = reserva_asiento(n_hilos[index]);
     pausa_aleatoria(3);
-    asientos_reservados[index][1] = reserva_asiento(n_hilos[index]);
+    asientos_reservados[1] = reserva_asiento(n_hilos[index]);
     pausa_aleatoria(3);
-    asientos_reservados[index][2] = reserva_asiento(n_hilos[index]);
+    asientos_reservados[2] = reserva_asiento(n_hilos[index]);
     pausa_aleatoria(3);
     return NULL;
 }
 
 void* funcion_hito3_liberar(void* arg) {
     int index = *(int*)arg;
-    libera_asiento(asientos_reservados[index][0]);
+    libera_asiento(asientos_reservados[0]);
     pausa_aleatoria(3);
-    libera_asiento(asientos_reservados[index][1]);
+    libera_asiento(asientos_reservados[1]);
     pausa_aleatoria(3);
-    libera_asiento(asientos_reservados[index][2]);
+    libera_asiento(asientos_reservados[2]);
     pausa_aleatoria(3);
     return NULL;
 }
