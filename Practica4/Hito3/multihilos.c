@@ -14,11 +14,17 @@
 
 int n_hilos[MAX_HILOS];
 int asientos_reservados[MAX_HILOS][3];
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void* ver_estado(void* arg) {
-    int capacidad = capacidad_sala();
-    for (int i = 1; i < capacidad + 1; i++) {
-        printf("Asiento %d %d \n", i, estado_asiento(i));
+    while (1) {
+        printf("Inicio de la revision \n");
+        int capacidad = capacidad_sala();
+        for (int i = 1; i < capacidad + 1; i++) {
+            printf("Asiento %d %d \n", i, estado_asiento(i));
+        }
+        printf("Fin de la revision \n");
+        sleep(5);
     }
     return NULL;
 }
@@ -52,7 +58,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (strcmp(argv[1], "multihilos") == 0) {
-        crea_sala(30);
+        crea_sala(10);
         pthread_t hilos[MAX_HILOS];
         pthread_t hilos_liberar[MAX_HILOS];
         pthread_t hilo_estado;
@@ -60,6 +66,7 @@ int main(int argc, char *argv[]) {
         int num_hilos_liberar = atoi(argv[3]);
         int indices[MAX_HILOS];
 
+        pthread_create(&hilo_estado, NULL, ver_estado, NULL);
         for (int i = 0; i < num_hilos; i++) {
             n_hilos[i] = i + 1;
             indices[i] = i;
@@ -77,9 +84,7 @@ int main(int argc, char *argv[]) {
         for (int i = 0; i < num_hilos_liberar; i++) {
             pthread_join(hilos_liberar[i], NULL);
         }
-
-        printf("Iteracion, para revisar que se queda limpio el archivo\n");
-        pthread_create(&hilo_estado, NULL, ver_estado, NULL);
+        
         pthread_join(hilo_estado, NULL);
 
         elimina_sala();
