@@ -10,97 +10,88 @@
 #include "retardo.h"
 #include "sala.h"
 
-#define MAX_HILOS 20
+#define MAX_HILOS 10
+
+int n_hilos[MAX_HILOS];
+int asientos_reservados[MAX_HILOS][3];
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void* ver_estado(void* arg) {
     while (1) {
+        pthread_mutex_lock(&mutex);
         int capacidad = capacidad_sala();
         for (int i = 1; i < capacidad + 1; i++) {
             printf("Asiento %d %d \n", i, estado_asiento(i));
         }
-        sleep(3); // Mostrar el estado cada 3 segundos
+        pthread_mutex_unlock(&mutex);
+        sleep(5); // Check the status every 5 seconds
     }
+    return NULL;
 }
 
-void* funcion_reserva(void* arg) {
-    int* n_hilo = (int*) arg;
-    int asiento1 = reserva_asiento(*n_hilo);
+void* funcion_hito3_reservar(void* arg) {
+    int index = *(int*)arg;
+    asientos_reservados[index][0] = reserva_asiento(n_hilos[index]);
     pausa_aleatoria(3);
-    int asiento2 = reserva_asiento(*n_hilo);
+    asientos_reservados[index][1] = reserva_asiento(n_hilos[index]);
     pausa_aleatoria(3);
-    int asiento3 = reserva_asiento(*n_hilo);
+    asientos_reservados[index][2] = reserva_asiento(n_hilos[index]);
     pausa_aleatoria(3);
+    return NULL;
 }
 
-void* funcion_liberacion(void* arg) {
-    int* n_hilo = (int*) arg;
-    int asiento1 = reserva_asiento(*n_hilo); // Reservar antes para liberar
+void* funcion_hito3_liberar(void* arg) {
+    int index = *(int*)arg;
+    libera_asiento(asientos_reservados[index][0]);
     pausa_aleatoria(3);
-    int asiento2 = reserva_asiento(*n_hilo);
+    libera_asiento(asientos_reservados[index][1]);
     pausa_aleatoria(3);
-    int asiento3 = reserva_asiento(*n_hilo);
+    libera_asiento(asientos_reservados[index][2]);
     pausa_aleatoria(3);
-
-    libera_asiento(asiento1);
-    pausa_aleatoria(3);
-    libera_asiento(asiento2);
-    pausa_aleatoria(3);
-    libera_asiento(asiento3);
-    pausa_aleatoria(3);
+    return NULL;
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        fprintf(stderr, "Uso: %s multihilos <n> <m>\n", argv[0]);
-        exit(EXIT_FAILURE);
+    if (argc != 4) {
+        fprintf(stderr, "Uso: %s multihilos <num_hilos> <num_hilos_liberar>\n", argv[0]);
+        return 1;
     }
 
     if (strcmp(argv[1], "multihilos") == 0) {
-        crea_sala(50);
-
-        int num_reserva_hilos = atoi(argv[2]);
-        int num_liberacion_hilos = atoi(argv[3]);
-
-        if (num_reserva_hilos + num_liberacion_hilos > MAX_HILOS) {
-            fprintf(stderr, "Número total de hilos no puede exceder %d\n", MAX_HILOS);
-            exit(EXIT_FAILURE);
-        }
-
-        pthread_t hilos_reserva[num_reserva_hilos];
-        pthread_t hilos_liberacion[num_liberacion_hilos];
+        crea_sala(30);
+        pthread_t hilos[MAX_HILOS];
+        pthread_t hilos_liberar[MAX_HILOS];
         pthread_t hilo_estado;
+        int num_hilos = atoi(argv[2]);
+        int num_hilos_liberar = atoi(argv[3]);
+        int indices[MAX_HILOS];
 
-        int id_hilo_reserva[num_reserva_hilos];
-        int id_hilo_liberacion[num_liberacion_hilos];
+        for (int i = 0; i < num_hilos; i++) {
+            n_hilos[i] = i + 1;
+            indices[i] = i;
+            pthread_create(&hilos[i], NULL, funcion_hito3_reservar, (void*)&indices[i]);
+        }
 
-        // Crear hilo para mostrar el estado de la sala
+        for (int i = 0; i < num_hilos; i++) {
+            pthread_join(hilos[i], NULL);
+        }
+
+        for (int i = 0; i < num_hilos_liberar; i++) {
+            pthread_create(&hilos_liberar[i], NULL, funcion_hito3_liberar, (void*)&indices[i]);
+        }
+
+        for (int i = 0; i < num_hilos_liberar; i++) {
+            pthread_join(hilos_liberar[i], NULL);
+        }
+
+        printf("Iteracion, para revisar que se queda limpio el archivo\n");
         pthread_create(&hilo_estado, NULL, ver_estado, NULL);
+        pthread_join(hilo_estado, NULL);
 
-        // Crear hilos para reserva
-        for (int i = 0; i < num_reserva_hilos; i++) {
-            id_hilo_reserva[i] = i + 1;
-            pthread_create(&hilos_reserva[i], NULL, funcion_reserva, (void*)&id_hilo_reserva[i]);
-        }
-
-        // Crear hilos para liberación
-        for (int i = 0; i < num_liberacion_hilos; i++) {
-            id_hilo_liberacion[i] = i + 1 + num_reserva_hilos;
-            pthread_create(&hilos_liberacion[i], NULL, funcion_liberacion, (void*)&id_hilo_liberacion[i]);
-        }
-
-        // Esperar a que todos los hilos terminen
-        for (int i = 0; i < num_reserva_hilos; i++) {
-            pthread_join(hilos_reserva[i], NULL);
-        }
-        for (int i = 0; i < num_liberacion_hilos; i++) {
-            pthread_join(hilos_liberacion[i], NULL);
-        }
-
-        // Terminar el hilo de estado
-        pthread_cancel(hilo_estado);
-
+        elimina_sala();
     } else {
         fprintf(stderr, "Orden no válida\n");
     }
+
     return 0;
 }
