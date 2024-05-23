@@ -80,6 +80,7 @@ int reserva_asiento(int id_persona){
 			asientos_libres_variable--;
 			*(asientos + count -1) = id_persona;
 			pthread_mutex_unlock(&cerrojo);
+			pthread_cond_signal(&condición_wait);
 			return count;
 		}
 	}
@@ -104,6 +105,7 @@ int libera_asiento(int id_asiento){
         asientos_ocupados_variable--;
         asientos_libres_variable++;
         pthread_mutex_unlock(&cerrojo);
+        pthread_cond_signal(&condición_wait);
         return id_persona_anterior;
 }
 
@@ -112,18 +114,22 @@ int estado_asiento(int id_asiento){
         pthread_mutex_lock(&cerrojo);
         if (comprueba_sala() == -1){
                 pthread_mutex_unlock(&cerrojo);
+                pthread_cond_signal(&condición_wait);
                 return -1; 
         }
         if (comprueba_id_asiento(id_asiento)){
                 pthread_mutex_unlock(&cerrojo);
+                pthread_cond_signal(&condición_wait);
                 return -1;
         }
 	if (*(asientos + id_asiento -1) != -1){
 		pthread_mutex_unlock(&cerrojo);
+		pthread_cond_signal(&condición_wait);
 		return *(asientos + id_asiento -1);
 	}
 	else{
 		pthread_mutex_unlock(&cerrojo);
+		pthread_cond_signal(&condición_wait);
 		return 0;
 	}
 }
