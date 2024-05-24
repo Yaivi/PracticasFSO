@@ -55,7 +55,12 @@ void* funcion_hito3_liberar(void* arg) {
       while (asientos_ocupados() == 0){
           pthread_cond_wait(&condicion_liberar, &cerrojo_condiciones);
       }
-      for (int j = 1; j < capacidad_sala(); j++){
+      
+      int contador_asientos_reservados = 0;
+      for (int j = 1; j < capacidad_sala()+1; j++){
+        if (j == capacidad_sala()){
+          j = 0;
+        }
         if (estado_asiento(j) > 0){
           libera_asiento(j);
           pausa_aleatoria(3);
@@ -63,14 +68,6 @@ void* funcion_hito3_liberar(void* arg) {
         }
       }
     }
-    /**
-    libera_asiento(asientos_reservados[0]);
-    pausa_aleatoria(3);
-    libera_asiento(asientos_reservados[1]);
-    pausa_aleatoria(3);
-    libera_asiento(asientos_reservados[2]);
-    pausa_aleatoria(3);
-    **/
     pthread_mutex_unlock(&cerrojo_condiciones);
     pthread_cond_broadcast(&condicion_reservar);
     pthread_cond_broadcast(&condicion_liberar);
