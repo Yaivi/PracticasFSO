@@ -31,6 +31,16 @@ void* ver_estado(void* arg) {
     return NULL;
 }
 
+
+void estado_final_sala(){
+    printf("Estado final de la sala\n");
+    int capacidad = capacidad_sala();
+    for (int i = 1; i < capacidad + 1; i++) {
+        printf("Asiento %d %d \n", i, estado_asiento(i));
+    }
+    printf("Estado final de la sala\n");
+}
+
 void* funcion_hito3_reservar(void* arg) {
     int index = *(int*)arg;
     pthread_mutex_lock(&cerrojo_condiciones);
@@ -103,10 +113,15 @@ int main(int argc, char *argv[]) {
             pthread_join(hilos_liberar[i], NULL);
         }
         
-        pthread_join(hilo_estado, NULL);
-
+        pthread_mutex_destroy(&cerrojo_condiciones);
+        pthread_cond_destroy(&condicion_reservar);
+        pthread_cond_destroy(&condicion_liberar);
+        pthread_cancel(hilo_estado);
+    
+        estado_final_sala();
         elimina_sala();
-
+    
+    
     } else {
         fprintf(stderr, "Orden no válida\n");
     }
