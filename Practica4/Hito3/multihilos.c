@@ -14,7 +14,10 @@
 
 int n_hilos[MAX_HILOS];
 int asientos_reservados[3];
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+pthread_mutex_t cerrojo_condiciones = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t condicion_reservar = PTHREAD_COND_INITIALIZER;
+pthread_cond_t condicion_liberar = PTHREAD_COND_INITIALIZER;
 
 void* ver_estado(void* arg) {
     while (1) {
@@ -31,23 +34,44 @@ void* ver_estado(void* arg) {
 
 void* funcion_hito3_reservar(void* arg) {
     int index = *(int*)arg;
+    pthread_mutex_lock(&cerrojo_condiciones);
+    while (asientos_libres == 0){
+        pthread_mutex_unlock(&cerrojo_condiciones);
+        pthread_cond_wait(&condicion_reservar, &cerrojo_condiciones);
+        pthread_mutex_lock(&cerrojo_condiciones);
+    }
     asientos_reservados[0] = reserva_asiento(n_hilos[index]);
     pausa_aleatoria(3);
     asientos_reservados[1] = reserva_asiento(n_hilos[index]);
     pausa_aleatoria(3);
     asientos_reservados[2] = reserva_asiento(n_hilos[index]);
     pausa_aleatoria(3);
+    
+    pthread_mutex_unlock(&cerrojo_condiciones);
+    pthread_cond_broadcast(&condicion_reservar);
+    pthread_cond_broadcast(&condicion_liberar);
     return NULL;
 }
 
 void* funcion_hito3_liberar(void* arg) {
     int index = *(int*)arg;
+    pthread_mutex_lock(&cerrojo_condiciones);
+    while (asientos_ocupados == 0){
+        pthread_mutex_unlock(&cerrojo_condiciones);
+        pthread_cond_wait(&condicion_liberar, &cerrojo_condiciones);
+        pthread_mutex_lock(&cerrojo_condiciones);
+    }
+    
     libera_asiento(asientos_reservados[0]);
     pausa_aleatoria(3);
     libera_asiento(asientos_reservados[1]);
     pausa_aleatoria(3);
     libera_asiento(asientos_reservados[2]);
     pausa_aleatoria(3);
+    
+    pthread_mutex_unlock(&cerrojo_condiciones);
+    pthread_cond_broadcast(&condicion_reservar);
+    pthread_cond_broadcast(&condicion_liberar);
     return NULL;
 }
 
@@ -58,7 +82,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (strcmp(argv[1], "multihilos") == 0) {
-        crea_sala(10);
+        crea_sala(30);
         pthread_t hilos[MAX_HILOS];
         pthread_t hilos_liberar[MAX_HILOS];
         pthread_t hilo_estado;
