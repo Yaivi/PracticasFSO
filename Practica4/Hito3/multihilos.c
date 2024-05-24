@@ -10,7 +10,7 @@
 #include "retardo.h"
 #include "sala.h"
 
-#define MAX_HILOS 10
+#define MAX_HILOS 100
 
 int n_hilos[MAX_HILOS];
 
@@ -55,12 +55,7 @@ void* funcion_hito3_liberar(void* arg) {
       while (asientos_ocupados() == 0){
           pthread_cond_wait(&condicion_liberar, &cerrojo_condiciones);
       }
-      
-      int contador_asientos_reservados = 0;
       for (int j = 1; j < capacidad_sala()+1; j++){
-        if (j == capacidad_sala()){
-          j = 0;
-        }
         if (estado_asiento(j) > 0){
           libera_asiento(j);
           pausa_aleatoria(3);
@@ -111,6 +106,7 @@ int main(int argc, char *argv[]) {
         pthread_join(hilo_estado, NULL);
 
         elimina_sala();
+
     } else {
         fprintf(stderr, "Orden no válida\n");
     }
