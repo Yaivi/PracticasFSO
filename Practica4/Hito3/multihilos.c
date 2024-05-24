@@ -13,7 +13,6 @@
 #define MAX_HILOS 10
 
 int n_hilos[MAX_HILOS];
-int asientos_reservados[3];
 
 pthread_mutex_t cerrojo_condiciones = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t condicion_reservar = PTHREAD_COND_INITIALIZER;
@@ -35,18 +34,13 @@ void* ver_estado(void* arg) {
 void* funcion_hito3_reservar(void* arg) {
     int index = *(int*)arg;
     pthread_mutex_lock(&cerrojo_condiciones);
-    while (asientos_libres == 0){
-        pthread_mutex_unlock(&cerrojo_condiciones);
-        pthread_cond_wait(&condicion_reservar, &cerrojo_condiciones);
-        pthread_mutex_lock(&cerrojo_condiciones);
-    }
-    asientos_reservados[0] = reserva_asiento(n_hilos[index]);
-    pausa_aleatoria(3);
-    asientos_reservados[1] = reserva_asiento(n_hilos[index]);
-    pausa_aleatoria(3);
-    asientos_reservados[2] = reserva_asiento(n_hilos[index]);
-    pausa_aleatoria(3);
-    
+    for (int i=0; i<3; i++) {
+      while (asientos_libres() == 0){
+          pthread_cond_wait(&condicion_reservar, &cerrojo_condiciones);
+      }
+      reserva_asiento(n_hilos[index]);
+      pausa_aleatoria(3);
+    }   
     pthread_mutex_unlock(&cerrojo_condiciones);
     pthread_cond_broadcast(&condicion_reservar);
     pthread_cond_broadcast(&condicion_liberar);
@@ -56,16 +50,16 @@ void* funcion_hito3_reservar(void* arg) {
 void* funcion_hito3_liberar(void* arg) {
     int index = *(int*)arg;
     pthread_mutex_lock(&cerrojo_condiciones);
-    while (asientos_ocupados == 0){
-        pthread_mutex_unlock(&cerrojo_condiciones);
-        pthread_cond_wait(&condicion_liberar, &cerrojo_condiciones);
-        pthread_mutex_lock(&cerrojo_condiciones);
-    }
+    
     for (int i = 0; i < 3; i++){
-      for (int i = 1; i < capacidad_sala(); i++){
-        if (estado_asiento(i) > 0){
-          libera_asiento(i);
+      while (asientos_ocupados() == 0){
+          pthread_cond_wait(&condicion_liberar, &cerrojo_condiciones);
+      }
+      for (int j = 1; j < capacidad_sala(); j++){
+        if (estado_asiento(j) > 0){
+          libera_asiento(j);
           pausa_aleatoria(3);
+          break;
         }
       }
     }
@@ -105,12 +99,12 @@ int main(int argc, char *argv[]) {
             pthread_create(&hilos[i], NULL, funcion_hito3_reservar, (void*)&indices[i]);
         }
 
-        for (int i = 0; i < num_hilos; i++) {
-            pthread_join(hilos[i], NULL);
-        }
-
         for (int i = 0; i < num_hilos_liberar; i++) {
             pthread_create(&hilos_liberar[i], NULL, funcion_hito3_liberar, (void*)&indices[i]);
+        }
+        
+        for (int i = 0; i < num_hilos; i++) {
+            pthread_join(hilos[i], NULL);
         }
 
         for (int i = 0; i < num_hilos_liberar; i++) {
