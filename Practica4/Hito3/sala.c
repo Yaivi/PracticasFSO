@@ -14,7 +14,6 @@ int *asientos;
 int CAPACIDAD_MAXIMA = -1;
 int asientos_libres_variable = -1;
 int asientos_ocupados_variable = -1;
-#define MAX 1000
 int num_asientos = 0;
 pthread_mutex_t cerrojo = PTHREAD_MUTEX_INITIALIZER;
 int comprueba_id_persona(int id_persona){
