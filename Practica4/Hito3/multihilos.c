@@ -95,16 +95,17 @@ int main(int argc, char *argv[]) {
         int indices[MAX_HILOS];
 
         pthread_create(&hilo_estado, NULL, ver_estado, NULL);
+        
+        for (int i = 0; i < num_hilos_liberar; i++) {
+            pthread_create(&hilos_liberar[i], NULL, funcion_hito3_liberar, (void*)&indices[i]);
+        }
+        
         for (int i = 0; i < num_hilos; i++) {
             n_hilos[i] = i + 1;
             indices[i] = i;
             pthread_create(&hilos[i], NULL, funcion_hito3_reservar, (void*)&indices[i]);
         }
 
-        for (int i = 0; i < num_hilos_liberar; i++) {
-            pthread_create(&hilos_liberar[i], NULL, funcion_hito3_liberar, (void*)&indices[i]);
-        }
-        
         for (int i = 0; i < num_hilos; i++) {
             pthread_join(hilos[i], NULL);
         }
