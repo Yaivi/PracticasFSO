@@ -15,6 +15,9 @@
 int n_hilos[MAX_HILOS];
 
 pthread_mutex_t cerrojo_condiciones = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t condicion_mujer = PTHREAD_COND_INITIALIZER;
+pthread_cond_t condicion_hombre = PTHREAD_COND_INITIALIZER;
+
 pthread_cond_t condicion_reservar = PTHREAD_COND_INITIALIZER;
 pthread_cond_t condicion_liberar = PTHREAD_COND_INITIALIZER;
 
@@ -41,18 +44,31 @@ void estado_final_sala(){
     printf("Estado final de la sala\n");
 }
 
-void* funcion_reto_reservar_liberar(void* arg){
+void* funcion_reto_hombre(void* arg){
   int index = *(int*)arg;
   pthread_mutex_lock(&cerrojo_condiciones);
   // AQUI IRÍA LA CONDICIÓN
   asiento = reserva_asiento(n_hilos[index]);
   pausa_aleatoria(3);
   libera_asiento(asiento);
-  //pthread_mutex_unlock();
-  //pthread_cond_broadcast(&condicion_reservar);
-  //pthread_cond_broadcast(&condicion_liberar);
+  pthread_mutex_unlock(cerrojo_condiciones);
+  pthread_cond_broadcast(&condicion_mujer);
   return NULL;
 }
+
+
+void* funcion_reto_mujer(void* arg){
+  int index = *(int*)arg;
+  pthread_mutex_lock(&cerrojo_condiciones);
+  // AQUI IRÍA LA CONDICIÓN
+  asiento = reserva_asiento(n_hilos[index]);
+  pausa_aleatoria(3);
+  libera_asiento(asiento);
+  pthread_mutex_unlock(cerrojo_condiciones);
+  pthread_cond_broadcast(&condicion_hombre);
+  return NULL;
+}
+
 
 void* funcion_hito3_reservar(void* arg) {
     int index = *(int*)arg;
