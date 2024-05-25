@@ -52,10 +52,8 @@ void estado_final_sala(){
 void* funcion_reto_hombre(void* arg) {
     int index = *(int*)arg;
     pthread_mutex_lock(&cerrojo_condiciones);
-    if  (asientos_ocupados() > 10) {
-      while (asientos_libres() == 0 || ((num_hombres+1)/asientos_ocupados())*100 >60){
-          pthread_cond_wait(&condicion_hombre, &cerrojo_condiciones);
-      }
+    while (asientos_libres() == 0 || asientos_ocupados() > 10 && ((num_hombres+1.0)/asientos_ocupados())*100 >60){
+        pthread_cond_wait(&condicion_hombre, &cerrojo_condiciones);
     }
     int sitio = reserva_asiento(n_hilos_hombres[index]);
     num_hombres++;
@@ -67,6 +65,7 @@ void* funcion_reto_hombre(void* arg) {
     sleep(20);
     pthread_mutex_lock(&cerrojo_condiciones);
     libera_asiento(sitio);
+    num_hombres--;
     pausa_aleatoria(3);
     pthread_mutex_unlock(&cerrojo_condiciones);
     pthread_cond_broadcast(&condicion_reservar);
@@ -79,10 +78,8 @@ void* funcion_reto_hombre(void* arg) {
 void* funcion_reto_mujer(void* arg) {
     int index = *(int*)arg;
     pthread_mutex_lock(&cerrojo_condiciones);
-    if  (asientos_ocupados() > 10) {
-      while (asientos_libres() == 0 || ((num_mujeres+1)/asientos_ocupados())*100 > 60){
-          pthread_cond_wait(&condicion_mujer, &cerrojo_condiciones);
-      }
+    while (asientos_libres() == 0 || asientos_ocupados() > 10 && ((num_mujeres+1.0)/asientos_ocupados())*100 >60){
+        pthread_cond_wait(&condicion_mujer, &cerrojo_condiciones);
     }
     int sitio = reserva_asiento(n_hilos_mujeres[index]);
     num_mujeres++;
@@ -94,8 +91,10 @@ void* funcion_reto_mujer(void* arg) {
     sleep(20);
     pthread_mutex_lock(&cerrojo_condiciones);
     libera_asiento(sitio);
+    num_mujeres--;
     pausa_aleatoria(3);
     pthread_mutex_unlock(&cerrojo_condiciones);
+    pthread_cond_broadcast(&condicion_reservar);
     pthread_cond_broadcast(&condicion_liberar);
     pthread_cond_broadcast(&condicion_mujer);
     return NULL;
