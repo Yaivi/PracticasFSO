@@ -52,7 +52,7 @@ void estado_final_sala(){
 void* funcion_reto_hombre(void* arg) {
     int index = *(int*)arg;
     pthread_mutex_lock(&cerrojo_condiciones);
-    while (asientos_libres() == 0 || asientos_ocupados() > 10 && ((num_hombres+1.0)/asientos_ocupados())*100 >60){
+    while (asientos_libres() == 0 || asientos_ocupados() >= 10 && ((num_hombres+1.0)/(asientos_ocupados()+1))*100 >60){
         pthread_cond_wait(&condicion_hombre, &cerrojo_condiciones);
     }
     int sitio = reserva_asiento(n_hilos_hombres[index]);
@@ -78,7 +78,7 @@ void* funcion_reto_hombre(void* arg) {
 void* funcion_reto_mujer(void* arg) {
     int index = *(int*)arg;
     pthread_mutex_lock(&cerrojo_condiciones);
-    while (asientos_libres() == 0 || asientos_ocupados() > 10 && ((num_mujeres+1.0)/asientos_ocupados())*100 >60){
+    while (asientos_libres() == 0 || asientos_ocupados() >= 10 && ((num_mujeres+1.0)/(asientos_ocupados()+1))*100 >60){
         pthread_cond_wait(&condicion_mujer, &cerrojo_condiciones);
     }
     int sitio = reserva_asiento(n_hilos_mujeres[index]);
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (strcmp(argv[1], "multihilos") == 0) {
-        crea_sala(50);
+        crea_sala(30);
         pthread_t hilos_hombres[MAX_HILOS];
         pthread_t hilos_mujeres[MAX_HILOS];
         pthread_t hilo_estado;
