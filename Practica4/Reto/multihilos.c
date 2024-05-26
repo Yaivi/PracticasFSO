@@ -12,11 +12,16 @@
 
 #define MAX_HILOS 100
 
-int n_hilos[MAX_HILOS];
+int n_hilos_hombres[MAX_HILOS];
+int n_hilos_mujeres[MAX_HILOS];
 
 pthread_mutex_t cerrojo_condiciones = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t condicion_mujer = PTHREAD_COND_INITIALIZER;
 pthread_cond_t condicion_hombre = PTHREAD_COND_INITIALIZER;
+
+int num_mujeres = 0;
+int num_hombres = 0;
+
 
 pthread_cond_t condicion_reservar = PTHREAD_COND_INITIALIZER;
 pthread_cond_t condicion_liberar = PTHREAD_COND_INITIALIZER;
@@ -44,67 +49,54 @@ void estado_final_sala(){
     printf("Estado final de la sala\n");
 }
 
-void* funcion_reto_hombre(void* arg){
-  int index = *(int*)arg;
-  pthread_mutex_lock(&cerrojo_condiciones);
-  // AQUI IRÍA LA CONDICIÓN
-  asiento = reserva_asiento(n_hilos[index]);
-  pausa_aleatoria(3);
-  libera_asiento(asiento);
-  pthread_mutex_unlock(cerrojo_condiciones);
-  pthread_cond_broadcast(&condicion_mujer);
-  return NULL;
-}
-
-
-void* funcion_reto_mujer(void* arg){
-  int index = *(int*)arg;
-  pthread_mutex_lock(&cerrojo_condiciones);
-  // AQUI IRÍA LA CONDICIÓN
-  asiento = reserva_asiento(n_hilos[index]);
-  pausa_aleatoria(3);
-  libera_asiento(asiento);
-  pthread_mutex_unlock(cerrojo_condiciones);
-  pthread_cond_broadcast(&condicion_hombre);
-  return NULL;
-}
-
-
-void* funcion_hito3_reservar(void* arg) {
+void* funcion_reto_hombre(void* arg) {
     int index = *(int*)arg;
     pthread_mutex_lock(&cerrojo_condiciones);
-    for (int i=0; i<3; i++) {
-      while (asientos_libres() == 0){
-          pthread_cond_wait(&condicion_reservar, &cerrojo_condiciones);
-      }
-      reserva_asiento(n_hilos[index]);
-      pausa_aleatoria(3);
-    }   
+    while (asientos_libres() == 0 || asientos_ocupados() > 10 && ((num_hombres+1.0)/asientos_ocupados())*100 >60){
+        pthread_cond_wait(&condicion_hombre, &cerrojo_condiciones);
+    }
+    int sitio = reserva_asiento(n_hilos_hombres[index]);
+    num_hombres++;
+    pthread_mutex_unlock(&cerrojo_condiciones);
+    pausa_aleatoria(3);
+    while (asientos_ocupados() == 0){
+        pthread_cond_wait(&condicion_liberar, &cerrojo_condiciones);
+    }
+    sleep(20);
+    pthread_mutex_lock(&cerrojo_condiciones);
+    libera_asiento(sitio);
+    num_hombres--;
+    pausa_aleatoria(3);
     pthread_mutex_unlock(&cerrojo_condiciones);
     pthread_cond_broadcast(&condicion_reservar);
     pthread_cond_broadcast(&condicion_liberar);
+    pthread_cond_broadcast(&condicion_hombre);
     return NULL;
 }
 
-void* funcion_hito3_liberar(void* arg) {
+
+void* funcion_reto_mujer(void* arg) {
     int index = *(int*)arg;
     pthread_mutex_lock(&cerrojo_condiciones);
-    
-    for (int i = 0; i < 3; i++){
-      while (asientos_ocupados() == 0){
-          pthread_cond_wait(&condicion_liberar, &cerrojo_condiciones);
-      }
-      for (int j = 1; j < capacidad_sala()+1; j++){
-        if (estado_asiento(j) > 0){
-          libera_asiento(j);
-          pausa_aleatoria(3);
-          break;
-        }
-      }
+    while (asientos_libres() == 0 || asientos_ocupados() > 10 && ((num_mujeres+1.0)/asientos_ocupados())*100 >60){
+        pthread_cond_wait(&condicion_mujer, &cerrojo_condiciones);
     }
+    int sitio = reserva_asiento(n_hilos_mujeres[index]);
+    num_mujeres++;
+    pausa_aleatoria(3);
+    pthread_mutex_unlock(&cerrojo_condiciones);
+    while (asientos_ocupados() == 0){
+        pthread_cond_wait(&condicion_liberar, &cerrojo_condiciones);
+    }
+    sleep(20);
+    pthread_mutex_lock(&cerrojo_condiciones);
+    libera_asiento(sitio);
+    num_mujeres--;
+    pausa_aleatoria(3);
     pthread_mutex_unlock(&cerrojo_condiciones);
     pthread_cond_broadcast(&condicion_reservar);
     pthread_cond_broadcast(&condicion_liberar);
+    pthread_cond_broadcast(&condicion_mujer);
     return NULL;
 }
 
@@ -115,37 +107,39 @@ int main(int argc, char *argv[]) {
     }
 
     if (strcmp(argv[1], "multihilos") == 0) {
-        crea_sala(10);
-        pthread_t hilos[MAX_HILOS];
-        pthread_t hilos_liberar[MAX_HILOS];
+        crea_sala(50);
+        pthread_t hilos_hombres[MAX_HILOS];
+        pthread_t hilos_mujeres[MAX_HILOS];
         pthread_t hilo_estado;
-        int num_hilos = atoi(argv[2]);
-        int num_hilos_liberar = atoi(argv[3]);
-        int indices[MAX_HILOS];
+        int num_hilos_hombres = atoi(argv[2]);
+        int num_hilos_mujeres = atoi(argv[3]);
+        int indices_hombres[MAX_HILOS];
+        int indices_mujeres[MAX_HILOS];
 
         pthread_create(&hilo_estado, NULL, ver_estado, NULL);
         
-        for (int i = 0; i < num_hilos_liberar; i++) {
-            pthread_create(&hilos_liberar[i], NULL, funcion_hito3_liberar, (void*)&indices[i]);
+        for (int i = 0; i < num_hilos_hombres; i++) {
+            n_hilos_hombres[i] = i +100; 
+            indices_hombres[i] = i;
+            pthread_create(&hilos_hombres[i], NULL, funcion_reto_hombre, (void*)&indices_hombres[i]);
         }
         
-        for (int i = 0; i < num_hilos; i++) {
-            n_hilos[i] = i + 1;
-            indices[i] = i;
-            pthread_create(&hilos[i], NULL, funcion_hito3_reservar, (void*)&indices[i]);
+        for (int i = 0; i < num_hilos_mujeres; i++) {
+            n_hilos_mujeres[i] = i + 1;
+            indices_mujeres[i] = i;
+            pthread_create(&hilos_mujeres[i], NULL, funcion_reto_mujer, (void*)&indices_mujeres[i]);
         }
 
-        for (int i = 0; i < num_hilos; i++) {
-            pthread_join(hilos[i], NULL);
+        for (int i = 0; i < num_hilos_hombres; i++) {
+            pthread_join(hilos_hombres[i], NULL);
         }
 
-        for (int i = 0; i < num_hilos_liberar; i++) {
-            pthread_join(hilos_liberar[i], NULL);
+        for (int i = 0; i < num_hilos_mujeres; i++) {
+            pthread_join(hilos_mujeres[i], NULL);
         }
         
         pthread_mutex_destroy(&cerrojo_condiciones);
-        pthread_cond_destroy(&condicion_reservar);
-        pthread_cond_destroy(&condicion_liberar);
+
         pthread_cancel(hilo_estado);
     
         estado_final_sala();
